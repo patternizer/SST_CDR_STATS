@@ -2,11 +2,15 @@
 
 # PROGRAM: plot_sst.py
 # ----------------------------------------------------------------------------------
-# Version 0.8
-# 5 February, 2019
+# Version 0.9
+# 11 February, 2019
 # michael.taylor AT reading DOT ac DOT uk
 
+# PYTHON DEBUGGER CONTROL:
+#------------------------
 # import os; os._exit(0)
+# import ipdb
+# ipdb.set_trace()
 
 import os.path
 import optparse
@@ -20,16 +24,10 @@ import seaborn as sns; sns.set(style="darkgrid")
 import datetime
 import matplotlib
 import matplotlib.pyplot as plt; plt.close("all")
-#from typhon.plots import plot_bitfield
-#import ipdb
-#ipdb.set_trace()
-    
-#cmap = 'tab20c' # https://matplotlib.org/users/colormaps
-#cmap = plt.get_cmap('Spectral',100) 
-#cmap = plt.get_cmap('viridis',100) 
-#cmap.set_under('white')
-#cmap.set_over('grey') 
 
+from typhon.plots import plot_bitfield
+cmap = 'tab20c' # https://matplotlib.org/users/colormaps
+    
 def calc_median(counts,bins):
 
     M = 0
@@ -61,9 +59,6 @@ def plot_n_sst(times,n_sst_q0,n_sst_q1,n_sst_q2,n_sst_q3,n_sst_q4,n_sst_q5):
     ocean_area = 361900000.0
     t = np.array(times, dtype=np.datetime64)
     years = (t[-1] - t[0]).astype('timedelta64[D]') / np.timedelta64(1, 'D') / 365.0
-#    Q3 = pd.Series(n_sst_q3, index=times)
-#    Q4 = pd.Series(n_sst_q4, index=times)
-#    Q5 = pd.Series(n_sst_q5, index=times)
     Q3 = pd.Series(n_sst_q3, index=times).fillna(0) / ocean_area / years
     Q4 = pd.Series(n_sst_q4, index=times).fillna(0) / ocean_area / years
     Q5 = pd.Series(n_sst_q5, index=times).fillna(0) / ocean_area / years
@@ -75,7 +70,6 @@ def plot_n_sst(times,n_sst_q0,n_sst_q1,n_sst_q2,n_sst_q3,n_sst_q4,n_sst_q5):
     plt.plot(times,df['QL=4 & 5'].cumsum(), drawstyle='steps')
     plt.plot(times,df['QL=3'].cumsum(), drawstyle='steps')
     plt.tick_params(labelsize=12)
-#    plt.ylabel('Cumulative observations', fontsize=12)
     plt.ylabel("Observation density / $\mathrm{km^{-2} \ yr^{-1}}$", fontsize=12)
     title_str = ' ' + 'QL=3:max=' + "{0:.2f}".format(df['QL=3'].cumsum().max()) + ' ' + 'QL=4 & 5:max=' + "{0:.2f}".format(df['QL=4 & 5'].cumsum().max())
 #    plt.title(title_str, fontsize=10)
@@ -115,7 +109,6 @@ def plot_n_sst_lat(lat_vec,n_sst_q0_lat,n_sst_q1_lat,n_sst_q2_lat,n_sst_q3_lat,n
     ax.set_xticks(np.linspace(-90, 90, 7))
     plt.tick_params(labelsize=12)
     plt.xlabel("Latitude / $\mathrm{\degree N}$", fontsize=12)
-#    plt.ylabel('Cumulative observations', fontsize=12)
     plt.ylabel("Observation density / $\mathrm{km^{-2} \ yr^{-1}}$", fontsize=12)
     title_str = 'QL=3:sum=' + "{0:.2f}".format(df['QL=3'].sum()) + ' ' +  'QL=4 & 5:sum=' + "{0:.2f}".format(df['QL=4 & 5'].sum())
 #    plt.title(title_str, fontsize=10)
@@ -410,8 +403,5 @@ if __name__ == "__main__":
 
     lat_fraction = calc_lat_fraction()
     load_data(lat_fraction)
-
-
-
 
 
