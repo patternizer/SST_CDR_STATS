@@ -1,6 +1,7 @@
 #!/bin/sh
 
-FIDHOME=/group_workspaces/cems2/fiduceo/Users/mtaylor/sst
+#FIDHOME=/group_workspaces/cems2/fiduceo/Users/mtaylor/sst
+FIDHOME=/gws/nopw/j04/fiduceo/Users/mtaylor/sst
 INMYVENV=${FIDHOME}/inmyvenv.sh
 GENERATE=${FIDHOME}/count_sst.py
 MEM_REQ=60000 # in MB     
@@ -25,8 +26,8 @@ fix(){
 #			echo "exceeded memory limit ${JOBNAME}"
 #		    fi
 		    if ! grep -q "Successfully completed" ${LOGFILE}; then
-			echo "submitting job ${JOBNAME}"
-#			bsub -q short-serial -W24:00 -R "rusage[mem=$MEM_REQ]" -M $MEM_MAX -oo ${LOGFILE} -J "$JOBNAME" $INMYVENV $GENERATE "${SAT}" "${year}" "${month}" "${day}"
+#			echo "submitting job ${JOBNAME}"
+			bsub -q short-serial -W24:00 -R "rusage[mem=$MEM_REQ]" -M $MEM_MAX -oo ${LOGFILE} -J "$JOBNAME" $INMYVENV $GENERATE "${SAT}" "${year}" "${month}" "${day}"
 		    fi
 		fi
 	    done
