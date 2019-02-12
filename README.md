@@ -1,23 +1,14 @@
-Development code for statistics of Level-2 SST CDR data and uncertainties.
+Development code for calculation of statistics of Level-2 SST CDR data and uncertainties.
 
-Upon installation with pip, all the Python-based dependencies should be
-installed automatically.  In addition, you will need:
-
-- CDR L2P data in CF1.6 netCDF format, obtainable from ESA CCI SST.
-- a L4 OSTIA netCDF for extraction of the landsea_mask.
-
-Before the first run you may have to update the firstline db::
-
-    import sst_cdr_stats
+To get started with SST_CDR_STATS, the paths to the Level-2 daily orbit files from AVHRR and ATSR need setting as well as the path to the output directory. Running join_sst.sh will generate the daily netCDF summaries. Runtime failures can be fixed by running fix_nc.sh. 
 
 After installation, command-line utilities include:
 
-    plot_sst
-    plot_landsea_mask
+    plot_sst.py
 
-Most of those have an online help, i.e. plot_sst --help, listing all the options and capabilities.
+which has the option to include a plot of the landsea_mask and ocean fraction:
 
-To get started with SST CDR statistical countings, you need to set the paths correctly to the input and output directories. 
+    plot_landsea_mask.py
 
-Contact Michael Taylor <michael.taylor@reading.ac.uk>.
+Contact: Michael Taylor <michael.taylor@reading.ac.uk>.
 
