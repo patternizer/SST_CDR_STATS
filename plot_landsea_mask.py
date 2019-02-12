@@ -1,4 +1,6 @@
 #!/usr/bin/env python 
+
+# Code include segment in plot_stt.py
   
 fig = plt.figure()
 grid = plt.GridSpec(1, 10, wspace=0.3, hspace=0.2)
