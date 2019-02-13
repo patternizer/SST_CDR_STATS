@@ -76,7 +76,7 @@ def load_daily_data(path_in):
         for i in range(len(filelist)):
             file_in = str(filelist[i])
             ds = xarray.open_dataset(file_in, decode_cf=True)
-            ds = ds[['time','ni','nj','lat','lon','sea_surface_temperature','sensitivity','sea_surface_temperature_total_uncertainty','quality_level','l2p_flags']]
+            ds = ds[['time','ni','nj','lat','lon','sea_surface_temperature','sst_sensitivity','sea_surface_temperature_total_uncertainty','quality_level','l2p_flags']]
             df.append(ds.isel(time=0))        
         dataframe = xarray.concat(df, dim='nj')
         
@@ -104,7 +104,7 @@ def run(instrument,year,month,day):
     lat = ds['lat']
     lon = ds['lon']
     sst = ds['sea_surface_temperature']
-    sensitivity = ds['sensitivity']
+    sensitivity = ds['sst_sensitivity']
     total_uncertainty = ds['sea_surface_temperature_total_uncertainty']
     quality_level = ds['quality_level']
     l2p_flags = ds['l2p_flags']
