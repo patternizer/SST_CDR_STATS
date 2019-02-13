@@ -26,7 +26,7 @@ fix(){
 #			echo "exceeded memory limit ${JOBNAME}"
 #		    fi
 		    if ! grep -q "Successfully completed" ${LOGFILE}; then
-#			echo "submitting job ${JOBNAME}"
+#			echo "submitting job ${JOBNAME}"  
 			bsub -q short-serial -W24:00 -R "rusage[mem=$MEM_REQ]" -M $MEM_MAX -oo ${LOGFILE} -J "$JOBNAME" $INMYVENV $GENERATE "${SAT}" "${year}" "${month}" "${day}"
 		    fi
 		fi
