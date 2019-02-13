@@ -7,8 +7,8 @@
 
 # COUNT SST obs density + uncertainty histograms for each q-level and zonal latitude
 # ----------------------------------------------------------------------------------
-# Version 0.10
-# 13 December, 2018
+# Version 0.11
+# 11 February, 2019
 # michael.taylor AT reading DOT ac DOT uk
 
 import os
@@ -63,8 +63,8 @@ def load_daily_data(path_in):
 
 def run(instrument,year,month,day):
     file_stem = instrument + str("%04d" %year) + str("%02d" %month) + str("%02d" %day)
-#    path = "/gws/nopw/j04/esacci_sst/output/CDR2.0/l2p/"
-    path = "/group_workspaces/cems2/esacci_sst/output/CDR2.0/l2p/"
+#    path = "/group_workspaces/cems2/esacci_sst/output/CDR2.0/l2p/"
+    path = "/gws/nopw/j04/esacci_sst/output/CDR2.0/l2p/"
     path_in = path + instrument + "/"+str("%04d" %year) + "/"+str("%02d" %month) + "/"+str("%02d" %day)+"/"
     path_out = "/group_workspaces/cems2/fiduceo/Users/mtaylor/sst/"
     file_out = path_out + instrument + "/"+str("%04d" %year) + "/"+str("%02d" %month) + "/"+str("%02d" %day)+"/" + file_stem + ".nc"
@@ -208,9 +208,9 @@ def run(instrument,year,month,day):
     sst_q5_hist, sst_q5_bins = np.histogram(sst.values[gd_q5.values], nbins, range=[sst_min,sst_max], density=False)
     sst_midpoints = 0.5*(sst_q0_bins[1:]+sst_q0_bins[:-1])
 
-    nbins = 50
-    sensitivity_min = 0.5
-    sensitivity_max = 1
+    nbins = 110
+    sensitivity_min = 0.0
+    sensitivity_max = 1.1
 
     sensitivity_q0_hist, sensitivity_q0_bins = np.histogram(sensitivity.values[gd_q0.values], nbins, range=[sensitivity_min,sensitivity_max], density=False)
     sensitivity_q1_hist, sensitivity_q1_bins = np.histogram(sensitivity.values[gd_q1.values], nbins, range=[sensitivity_min,sensitivity_max], density=False)
