@@ -1,6 +1,5 @@
 #!/bin/sh
 
-#FIDHOME=/group_workspaces/cems2/fiduceo/Users/mtaylor/sst
 FIDHOME=/gws/nopw/j04/fiduceo/Users/mtaylor/sst
 INMYVENV=${FIDHOME}/inmyvenv.sh
 GENERATE=${FIDHOME}/count_sst.py
@@ -35,11 +34,11 @@ fix(){
     done
 }
 
-fix AVHRR06_G 1979 1982
+#fix AVHRR06_G 1979 1982
 fix AVHRR07_G 1981 1985
-fix AVHRR08_G 1983 1985
+#fix AVHRR08_G 1983 1985
 fix AVHRR09_G 1985 1992
-fix AVHRR10_G 1986 1991
+#fix AVHRR10_G 1986 1991
 fix AVHRR11_G 1988 1995
 fix AVHRR12_G 1991 1998
 fix AVHRR14_G 1995 2002
