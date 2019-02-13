@@ -87,9 +87,9 @@ def run(instrument,year,month,day):
     file_stem = instrument + str("%04d" %year) + str("%02d" %month) + str("%02d" %day)
 
     if ((instrument == 'AATSR') or (instrument == 'ATSR1') or (instrument == 'ATSR2')):
-        path = /gws/nopw/j04/esacci_sst/output/CDR2.1_release/ATSR/L2P/v2.1/
+        path = "/gws/nopw/j04/esacci_sst/output/CDR2.1_release/ATSR/L2P/v2.1/"
     else:
-        path = /gws/nopw/j04/esacci_sst/output/CDR2.1_release/AVHRR/L2P/v2.1/
+        path = "/gws/nopw/j04/esacci_sst/output/CDR2.1_release/AVHRR/L2P/v2.1/"
 
     path_in = path + instrument + "/"+str("%04d" %year) + "/"+str("%02d" %month) + "/"+str("%02d" %day)+"/"
     path_out = "/gws/nopw/j04/fiduceo/Users/mtaylor/sst/"
