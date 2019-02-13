@@ -8,8 +8,35 @@
 # COUNT SST obs density + uncertainty histograms for each q-level and zonal latitude
 # ----------------------------------------------------------------------------------
 # Version 0.11
-# 11 February, 2019
+# 13 February, 2019
 # michael.taylor AT reading DOT ac DOT uk
+
+# CHANGELOG:
+# ---------
+# /gws/nopw/j04/esacci_sst/output/CDR2.1_release/AVHRR/L2P/v2.1/
+#
+# AVHRR07_G/
+# AVHRR09_G/
+# AVHRR11_G/
+# AVHRR12_G/
+# AVHRR14_G/
+# AVHRR15_G/
+# AVHRR16_G/
+# AVHRR17_G/
+# AVHRR18_G/
+# AVHRR19_G/
+# AVHRRMTA_G/
+#
+# /gws/nopw/j04/esacci_sst/output/CDR2.1_release/ATSR/L2P/v2.1/
+#
+# AATSR/
+# ATSR1/
+# ATSR2/
+#
+# hi-res lat_vec = [-90,90,0.05] --> for direct alignment with L4 OSTIA grid
+# hi-res retrieval sensitivity: [0,2,0.01]
+# QL >= 3
+# use bin edges not midpoints in histogram calculation
 
 import os
 import os.path
@@ -39,12 +66,6 @@ def calc_bins(x, y, bins):
     digits = np.digitize(x, bins)
     binned = [y[digits == i, ...] for i in range(len(bins))]
     return binned
-
-def calc_total(large_scale_correlated_uncertainty,synoptically_correlated_uncertainty,uncorrelated_uncertainty):    
-    """ calculate the total uncertainty from the norm of the large-scale and synoptically-correlated uncertainty and the uncorrelated uncertainty """
-    total_uncertainty = (large_scale_correlated_uncertainty**2 + \
-synoptically_correlated_uncertainty**2 + uncorrelated_uncertainty**2)**0.5
-    return total_uncertainty
                    
 def load_daily_data(path_in):
 
@@ -55,20 +76,24 @@ def load_daily_data(path_in):
         for i in range(len(filelist)):
             file_in = str(filelist[i])
             ds = xarray.open_dataset(file_in, decode_cf=True)
-            ds = ds[['time','ni','nj','lat','lon','sea_surface_temperature','sensitivity','large_scale_correlated_uncertainty','synoptically_correlated_uncertainty','uncorrelated_uncertainty','quality_level','l2p_flags']]
+            ds = ds[['time','ni','nj','lat','lon','sea_surface_temperature','sensitivity','sea_surface_temperature_total_uncertainty','quality_level','l2p_flags']]
             df.append(ds.isel(time=0))        
         dataframe = xarray.concat(df, dim='nj')
         
         return dataframe
 
 def run(instrument,year,month,day):
+
     file_stem = instrument + str("%04d" %year) + str("%02d" %month) + str("%02d" %day)
-#    path = "/group_workspaces/cems2/esacci_sst/output/CDR2.0/l2p/"
-    path = "/gws/nopw/j04/esacci_sst/output/CDR2.0/l2p/"
+
+    if ((instrument == 'AATSR') or (instrument == 'ATSR1') or (instrument == 'ATSR2')):
+        path = /gws/nopw/j04/esacci_sst/output/CDR2.1_release/ATSR/L2P/v2.1/
+    else:
+        path = /gws/nopw/j04/esacci_sst/output/CDR2.1_release/AVHRR/L2P/v2.1/
+
     path_in = path + instrument + "/"+str("%04d" %year) + "/"+str("%02d" %month) + "/"+str("%02d" %day)+"/"
-    path_out = "/group_workspaces/cems2/fiduceo/Users/mtaylor/sst/"
+    path_out = "/gws/nopw/j04/fiduceo/Users/mtaylor/sst/"
     file_out = path_out + instrument + "/"+str("%04d" %year) + "/"+str("%02d" %month) + "/"+str("%02d" %day)+"/" + file_stem + ".nc"
-#    file_out = path_out + file_stem + ".nc"
 
     if os.path.exists(file_out):
         os.remove(file_out)
@@ -80,12 +105,9 @@ def run(instrument,year,month,day):
     lon = ds['lon']
     sst = ds['sea_surface_temperature']
     sensitivity = ds['sensitivity']
-    large_scale_correlated_uncertainty = ds['large_scale_correlated_uncertainty']
-    synoptically_correlated_uncertainty = ds['synoptically_correlated_uncertainty']
-    uncorrelated_uncertainty = ds['uncorrelated_uncertainty']
+    total_uncertainty = ds['sea_surface_temperature_total_uncertainty']
     quality_level = ds['quality_level']
     l2p_flags = ds['l2p_flags']
-    total_uncertainty = calc_total(large_scale_correlated_uncertainty,synoptically_correlated_uncertainty,uncorrelated_uncertainty)
 
 # FILTERING (quality_level, l2p_flags, latitude)
 
@@ -100,9 +122,6 @@ def run(instrument,year,month,day):
     lake_flag_idx = [i for i, j in enumerate(lake_flag_logical) if j == '1']
     river_flag_idx = [i for i, j in enumerate(river_flag_logical) if j == '1']
     if not ((land_flag_idx) or (ice_flag_idx) or (lake_flag_idx) or (river_flag_idx)):
-        gd_q0 = (np.isfinite(sst)) & (quality_level==0)
-        gd_q1 = (np.isfinite(sst)) & (quality_level==1)
-        gd_q2 = (np.isfinite(sst)) & (quality_level==2)
         gd_q3 = (np.isfinite(sst)) & (quality_level==3)
         gd_q4 = (np.isfinite(sst)) & (quality_level==4)
         gd_q5 = (np.isfinite(sst)) & (quality_level==5)
@@ -130,66 +149,44 @@ def run(instrument,year,month,day):
                 no_river = (l2p_flags_int!=river_flag)
                 sea_only = ((sea_only) & (no_river))
 
-        gd_q0 = (np.isfinite(sst)) & (quality_level==0) & (sea_only)
-        gd_q1 = (np.isfinite(sst)) & (quality_level==1) & (sea_only)
-        gd_q2 = (np.isfinite(sst)) & (quality_level==2) & (sea_only)
         gd_q3 = (np.isfinite(sst)) & (quality_level==3) & (sea_only)
         gd_q4 = (np.isfinite(sst)) & (quality_level==4) & (sea_only)
         gd_q5 = (np.isfinite(sst)) & (quality_level==5) & (sea_only)
 
-    dlat = 1
+# LATITUDINAL SLICING
+
+    dlat = 0.05
     lat_vec = np.arange(-90,90+dlat,dlat)
     sst_lat = calc_bins(lat.values.ravel(),sst.values.ravel(),lat_vec)
     sensitivity_lat = calc_bins(lat.values.ravel(),sensitivity.values.ravel(),lat_vec)
     total_uncertainty_lat = calc_bins(lat.values.ravel(),total_uncertainty.values.ravel(),lat_vec)
 
-    gd_q0_lat = calc_bins(lat.values.ravel(),gd_q0.values.ravel(),lat_vec)
-    gd_q1_lat = calc_bins(lat.values.ravel(),gd_q1.values.ravel(),lat_vec)
-    gd_q2_lat = calc_bins(lat.values.ravel(),gd_q2.values.ravel(),lat_vec)
     gd_q3_lat = calc_bins(lat.values.ravel(),gd_q3.values.ravel(),lat_vec)
     gd_q4_lat = calc_bins(lat.values.ravel(),gd_q4.values.ravel(),lat_vec)
     gd_q5_lat = calc_bins(lat.values.ravel(),gd_q5.values.ravel(),lat_vec)
 
 # OBSERVATION DENSITIES
 
-    n_sst_q0 = len(sst.values[gd_q0.values])
-    n_sst_q1 = len(sst.values[gd_q1.values])
-    n_sst_q2 = len(sst.values[gd_q2.values])
     n_sst_q3 = len(sst.values[gd_q3.values])
     n_sst_q4 = len(sst.values[gd_q4.values])
     n_sst_q5 = len(sst.values[gd_q5.values])
 
-    n_sensitivity_q0 = len(sensitivity.values[gd_q0.values])
-    n_sensitivity_q1 = len(sensitivity.values[gd_q1.values])
-    n_sensitivity_q2 = len(sensitivity.values[gd_q2.values])
     n_sensitivity_q3 = len(sensitivity.values[gd_q3.values])
     n_sensitivity_q4 = len(sensitivity.values[gd_q4.values])
     n_sensitivity_q5 = len(sensitivity.values[gd_q5.values])
 
-    n_total_uncertainty_q0 = len(total_uncertainty.values[gd_q0.values])
-    n_total_uncertainty_q1 = len(total_uncertainty.values[gd_q1.values])
-    n_total_uncertainty_q2 = len(total_uncertainty.values[gd_q2.values])
     n_total_uncertainty_q3 = len(total_uncertainty.values[gd_q3.values])
     n_total_uncertainty_q4 = len(total_uncertainty.values[gd_q4.values])
     n_total_uncertainty_q5 = len(total_uncertainty.values[gd_q5.values])
 
-    n_sst_q0_lat = [len(s[q]) for (s, q) in zip(sst_lat, gd_q0_lat)]
-    n_sst_q1_lat = [len(s[q]) for (s, q) in zip(sst_lat, gd_q1_lat)]
-    n_sst_q2_lat = [len(s[q]) for (s, q) in zip(sst_lat, gd_q2_lat)]
     n_sst_q3_lat = [len(s[q]) for (s, q) in zip(sst_lat, gd_q3_lat)]
     n_sst_q4_lat = [len(s[q]) for (s, q) in zip(sst_lat, gd_q4_lat)]
     n_sst_q5_lat = [len(s[q]) for (s, q) in zip(sst_lat, gd_q5_lat)]
 
-    n_sensitivity_q0_lat = [len(s[q]) for (s, q) in zip(sensitivity_lat, gd_q0_lat)]
-    n_sensitivity_q1_lat = [len(s[q]) for (s, q) in zip(sensitivity_lat, gd_q1_lat)]
-    n_sensitivity_q2_lat = [len(s[q]) for (s, q) in zip(sensitivity_lat, gd_q2_lat)]
     n_sensitivity_q3_lat = [len(s[q]) for (s, q) in zip(sensitivity_lat, gd_q3_lat)]
     n_sensitivity_q4_lat = [len(s[q]) for (s, q) in zip(sensitivity_lat, gd_q4_lat)]
     n_sensitivity_q5_lat = [len(s[q]) for (s, q) in zip(sensitivity_lat, gd_q5_lat)]
 
-    n_total_uncertainty_q0_lat = [len(s[q]) for (s, q) in zip(total_uncertainty_lat, gd_q0_lat)]
-    n_total_uncertainty_q1_lat = [len(s[q]) for (s, q) in zip(total_uncertainty_lat, gd_q1_lat)]
-    n_total_uncertainty_q2_lat = [len(s[q]) for (s, q) in zip(total_uncertainty_lat, gd_q2_lat)]
     n_total_uncertainty_q3_lat = [len(s[q]) for (s, q) in zip(total_uncertainty_lat, gd_q3_lat)]
     n_total_uncertainty_q4_lat = [len(s[q]) for (s, q) in zip(total_uncertainty_lat, gd_q4_lat)]
     n_total_uncertainty_q5_lat = [len(s[q]) for (s, q) in zip(total_uncertainty_lat, gd_q5_lat)]
@@ -200,37 +197,28 @@ def run(instrument,year,month,day):
     sst_min = 260
     sst_max = 320
 
-    sst_q0_hist, sst_q0_bins = np.histogram(sst.values[gd_q0.values], nbins, range=[sst_min,sst_max], density=False)
-    sst_q1_hist, sst_q1_bins = np.histogram(sst.values[gd_q1.values], nbins, range=[sst_min,sst_max], density=False)
-    sst_q2_hist, sst_q2_bins = np.histogram(sst.values[gd_q2.values], nbins, range=[sst_min,sst_max], density=False)
     sst_q3_hist, sst_q3_bins = np.histogram(sst.values[gd_q3.values], nbins, range=[sst_min,sst_max], density=False)
     sst_q4_hist, sst_q4_bins = np.histogram(sst.values[gd_q4.values], nbins, range=[sst_min,sst_max], density=False)
     sst_q5_hist, sst_q5_bins = np.histogram(sst.values[gd_q5.values], nbins, range=[sst_min,sst_max], density=False)
-    sst_midpoints = 0.5*(sst_q0_bins[1:]+sst_q0_bins[:-1])
+    sst_midpoints = 0.5*(sst_q5_bins[1:]+sst_q5_bins[:-1])
 
-    nbins = 110
+    nbins = 200
     sensitivity_min = 0.0
-    sensitivity_max = 1.1
+    sensitivity_max = 2.0
 
-    sensitivity_q0_hist, sensitivity_q0_bins = np.histogram(sensitivity.values[gd_q0.values], nbins, range=[sensitivity_min,sensitivity_max], density=False)
-    sensitivity_q1_hist, sensitivity_q1_bins = np.histogram(sensitivity.values[gd_q1.values], nbins, range=[sensitivity_min,sensitivity_max], density=False)
-    sensitivity_q2_hist, sensitivity_q2_bins = np.histogram(sensitivity.values[gd_q2.values], nbins, range=[sensitivity_min,sensitivity_max], density=False)
     sensitivity_q3_hist, sensitivity_q3_bins = np.histogram(sensitivity.values[gd_q3.values], nbins, range=[sensitivity_min,sensitivity_max], density=False)
     sensitivity_q4_hist, sensitivity_q4_bins = np.histogram(sensitivity.values[gd_q4.values], nbins, range=[sensitivity_min,sensitivity_max], density=False)
     sensitivity_q5_hist, sensitivity_q5_bins = np.histogram(sensitivity.values[gd_q5.values], nbins, range=[sensitivity_min,sensitivity_max], density=False)
-    sensitivity_midpoints = 0.5*(sensitivity_q0_bins[1:]+sensitivity_q0_bins[:-1])
+    sensitivity_midpoints = 0.5*(sensitivity_q5_bins[1:]+sensitivity_q5_bins[:-1])
 
     nbins = 400
     total_uncertainty_min = 0
     total_uncertainty_max = 4
 
-    total_uncertainty_q0_hist, total_uncertainty_q0_bins = np.histogram(total_uncertainty.values[gd_q0.values], nbins, range=[total_uncertainty_min,total_uncertainty_max], density=False)
-    total_uncertainty_q1_hist, total_uncertainty_q1_bins = np.histogram(total_uncertainty.values[gd_q1.values], nbins, range=[total_uncertainty_min,total_uncertainty_max], density=False)
-    total_uncertainty_q2_hist, total_uncertainty_q2_bins = np.histogram(total_uncertainty.values[gd_q2.values], nbins, range=[total_uncertainty_min,total_uncertainty_max], density=False)
     total_uncertainty_q3_hist, total_uncertainty_q3_bins = np.histogram(total_uncertainty.values[gd_q3.values], nbins, range=[total_uncertainty_min,total_uncertainty_max], density=False)
     total_uncertainty_q4_hist, total_uncertainty_q4_bins = np.histogram(total_uncertainty.values[gd_q4.values], nbins, range=[total_uncertainty_min,total_uncertainty_max], density=False)
     total_uncertainty_q5_hist, total_uncertainty_q5_bins = np.histogram(total_uncertainty.values[gd_q5.values], nbins, range=[total_uncertainty_min,total_uncertainty_max], density=False)
-    total_uncertainty_midpoints = 0.5*(total_uncertainty_q0_bins[1:]+total_uncertainty_q0_bins[:-1])
+    total_uncertainty_midpoints = 0.5*(total_uncertainty_q5_bins[1:]+total_uncertainty_q5_bins[:-1])
 
 # WRITE NETCDF
 
@@ -240,65 +228,22 @@ def run(instrument,year,month,day):
     data_out["sensitivity_midpoints"] = (("sensitivity_midpoints",), sensitivity_midpoints)
     data_out["total_uncertainty_midpoints"] = (("total_uncertainty_midpoints",), total_uncertainty_midpoints)
 
-    data_out["n_sst_q0"] = (("time",), np.atleast_1d(n_sst_q0))
-    data_out["n_sst_q1"] = (("time",), np.atleast_1d(n_sst_q1))
-    data_out["n_sst_q2"] = (("time",), np.atleast_1d(n_sst_q2))
     data_out["n_sst_q3"] = (("time",), np.atleast_1d(n_sst_q3))
     data_out["n_sst_q4"] = (("time",), np.atleast_1d(n_sst_q4))
     data_out["n_sst_q5"] = (("time",), np.atleast_1d(n_sst_q5))
-
-    data_out["n_sensitivity_q0"] = (("time",), np.atleast_1d(n_sensitivity_q0))
-    data_out["n_sensitivity_q1"] = (("time",), np.atleast_1d(n_sensitivity_q1))
-    data_out["n_sensitivity_q2"] = (("time",), np.atleast_1d(n_sensitivity_q2))
-    data_out["n_sensitivity_q3"] = (("time",), np.atleast_1d(n_sensitivity_q3))
-    data_out["n_sensitivity_q4"] = (("time",), np.atleast_1d(n_sensitivity_q4))
-    data_out["n_sensitivity_q5"] = (("time",), np.atleast_1d(n_sensitivity_q5))
-
-    data_out["n_total_uncertainty_q0"] = (("time",), np.atleast_1d(n_total_uncertainty_q0))
-    data_out["n_total_uncertainty_q1"] = (("time",), np.atleast_1d(n_total_uncertainty_q1))
-    data_out["n_total_uncertainty_q2"] = (("time",), np.atleast_1d(n_total_uncertainty_q2))
-    data_out["n_total_uncertainty_q3"] = (("time",), np.atleast_1d(n_total_uncertainty_q3))
-    data_out["n_total_uncertainty_q4"] = (("time",), np.atleast_1d(n_total_uncertainty_q4))
-    data_out["n_total_uncertainty_q5"] = (("time",), np.atleast_1d(n_total_uncertainty_q5))
  
-    data_out["n_sst_q0_lat"] = (("time","lat_vec",), np.atleast_2d(n_sst_q0_lat))
-    data_out["n_sst_q1_lat"] = (("time","lat_vec",), np.atleast_2d(n_sst_q1_lat))
-    data_out["n_sst_q2_lat"] = (("time","lat_vec",), np.atleast_2d(n_sst_q2_lat))
     data_out["n_sst_q3_lat"] = (("time","lat_vec",), np.atleast_2d(n_sst_q3_lat))
     data_out["n_sst_q4_lat"] = (("time","lat_vec",), np.atleast_2d(n_sst_q4_lat))
     data_out["n_sst_q5_lat"] = (("time","lat_vec",), np.atleast_2d(n_sst_q5_lat))
 
-    data_out["n_sensitivity_q0_lat"] = (("time","lat_vec",), np.atleast_2d(n_sensitivity_q0_lat))
-    data_out["n_sensitivity_q1_lat"] = (("time","lat_vec",), np.atleast_2d(n_sensitivity_q1_lat))
-    data_out["n_sensitivity_q2_lat"] = (("time","lat_vec",), np.atleast_2d(n_sensitivity_q2_lat))
-    data_out["n_sensitivity_q3_lat"] = (("time","lat_vec",), np.atleast_2d(n_sensitivity_q3_lat))
-    data_out["n_sensitivity_q4_lat"] = (("time","lat_vec",), np.atleast_2d(n_sensitivity_q4_lat))
-    data_out["n_sensitivity_q5_lat"] = (("time","lat_vec",), np.atleast_2d(n_sensitivity_q5_lat))
-
-    data_out["n_total_uncertainty_q0_lat"] = (("time","lat_vec",), np.atleast_2d(n_total_uncertainty_q0_lat))
-    data_out["n_total_uncertainty_q1_lat"] = (("time","lat_vec",), np.atleast_2d(n_total_uncertainty_q1_lat))
-    data_out["n_total_uncertainty_q2_lat"] = (("time","lat_vec",), np.atleast_2d(n_total_uncertainty_q2_lat))
-    data_out["n_total_uncertainty_q3_lat"] = (("time","lat_vec",), np.atleast_2d(n_total_uncertainty_q3_lat))
-    data_out["n_total_uncertainty_q4_lat"] = (("time","lat_vec",), np.atleast_2d(n_total_uncertainty_q4_lat))
-    data_out["n_total_uncertainty_q5_lat"] = (("time","lat_vec",), np.atleast_2d(n_total_uncertainty_q5_lat))
-
-    data_out["sst_q0_hist"] = (("time","sst_midpoints",), np.atleast_2d(sst_q0_hist))
-    data_out["sst_q1_hist"] = (("time","sst_midpoints",), np.atleast_2d(sst_q1_hist))
-    data_out["sst_q2_hist"] = (("time","sst_midpoints",), np.atleast_2d(sst_q2_hist))
     data_out["sst_q3_hist"] = (("time","sst_midpoints",), np.atleast_2d(sst_q3_hist))
     data_out["sst_q4_hist"] = (("time","sst_midpoints",), np.atleast_2d(sst_q4_hist))
     data_out["sst_q5_hist"] = (("time","sst_midpoints",), np.atleast_2d(sst_q5_hist))
 
-    data_out["sensitivity_q0_hist"] = (("time","sensitivity_midpoints",), np.atleast_2d(sensitivity_q0_hist))
-    data_out["sensitivity_q1_hist"] = (("time","sensitivity_midpoints",), np.atleast_2d(sensitivity_q1_hist))
-    data_out["sensitivity_q2_hist"] = (("time","sensitivity_midpoints",), np.atleast_2d(sensitivity_q2_hist))
     data_out["sensitivity_q3_hist"] = (("time","sensitivity_midpoints",), np.atleast_2d(sensitivity_q3_hist))
     data_out["sensitivity_q4_hist"] = (("time","sensitivity_midpoints",), np.atleast_2d(sensitivity_q4_hist))
     data_out["sensitivity_q5_hist"] = (("time","sensitivity_midpoints",), np.atleast_2d(sensitivity_q5_hist))
 
-    data_out["total_uncertainty_q0_hist"] = (("time","total_uncertainty_midpoints"), np.atleast_2d(total_uncertainty_q0_hist))
-    data_out["total_uncertainty_q1_hist"] = (("time","total_uncertainty_midpoints",), np.atleast_2d(total_uncertainty_q1_hist))
-    data_out["total_uncertainty_q2_hist"] = (("time","total_uncertainty_midpoints",), np.atleast_2d(total_uncertainty_q2_hist))
     data_out["total_uncertainty_q3_hist"] = (("time","total_uncertainty_midpoints",), np.atleast_2d(total_uncertainty_q3_hist))
     data_out["total_uncertainty_q4_hist"] = (("time","total_uncertainty_midpoints",), np.atleast_2d(total_uncertainty_q4_hist))
     data_out["total_uncertainty_q5_hist"] = (("time","total_uncertainty_midpoints",), np.atleast_2d(total_uncertainty_q5_hist))
@@ -315,5 +260,8 @@ if __name__ == "__main__":
     month = int(args[2])
     day = int(args[3])
     run(instrument,year,month,day)
+
+
+
 
 
