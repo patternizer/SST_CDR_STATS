@@ -24,10 +24,10 @@ join(){
 		LOGDIR="$FIDHOME/${SAT}/${year}/${month}/${day}"	       
 
 		if [ -d "$LOGDIR" ]; then
-		    python join_sst.py ${SAT} ${year} ${month} ${day}  
-		    echo ${JOBNAME}
-#                   LOGFILE=${LOGDIR}/run.log		    
-# 		    bsub -q short-serial -W24:00 -R "rusage[mem=$MEM_REQ]" -M $MEM_MAX -oo ${LOGFILE} -J "$JOBNAME" $INMYVENV $GENERATE "${SAT}" "${year}" "${month}" "${day}"
+#		    python join_sst.py ${SAT} ${year} ${month} ${day}  
+#		    echo ${JOBNAME}
+                   LOGFILE=${LOGDIR}/run.log		    
+ 		    bsub -q short-serial -W24:00 -R "rusage[mem=$MEM_REQ]" -M $MEM_MAX -oo ${LOGFILE} -J "$JOBNAME" $INMYVENV $GENERATE "${SAT}" "${year}" "${month}" "${day}"
 		fi
 
 	    done
