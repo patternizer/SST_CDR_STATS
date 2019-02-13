@@ -6,7 +6,7 @@
 # degug: python -mipdb join_sst.py instrument year month day
 # ----------------------------------------------------------------------------------
 # Version 0.2
-# 11 February, 2019
+# 13 February, 2019
 # michael.taylor AT reading DOT ac DOT uk
 
 #import os
@@ -17,15 +17,11 @@ from  optparse import OptionParser
 import sys
 import numpy as np
 import xarray
-#import datetime
                    
 
 def run(instrument,year,month,day):
 
-    file_stem = instrument + str("%04d" %year) + str("%02d" %month) + str("%02d" %day)    
-#    path_in = "/group_workspaces/cems2/fiduceo/Users/mtaylor/sst"
-#    path_in = "/home/laptop/Desktop/sst"
-    path_in = "/gws/nopw/j04/fiduceo/Users/mtaylor/sst"
+    file_stem = instrument + str("%04d" %year) + str("%02d" %month) + str("%02d" %day)      path_in = "/gws/nopw/j04/fiduceo/Users/mtaylor/sst"
     file_in = path_in + "/" + instrument + "/" + str("%04d" %year) + "/" + str("%02d" %month) + "/" + str("%02d" %day)+"/" + file_stem + ".nc"
     file_out = path_in + "/" + instrument + "/" + instrument + "_summary.nc"
 
