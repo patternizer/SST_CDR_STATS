@@ -1,5 +1,3 @@
-![ESA-SSI-CCI](http://cci.esa.int/sites/default/files/esa_cci_sst_logo_0.GIF)
-
 <img alt="ESA CCI: SST CDR2.1_release stats" align="right" src="http://cci.esa.int/sites/default/files/esa_cci_sst_logo_0.GIF">
 
 [![Build Status](https://travis-ci.org/patternizer/SST_CDR_STATS.svg?branch=master)](https://travis-ci.org/patternizer/SST_CDR_STATS)
@@ -27,7 +25,7 @@ which has the option to include a plot of the landsea_mask and ocean fraction:
 
 ### Contributors
 
-Thanks go to the members of the [FIDUCEO project consortium](http://www.fiduceo.eu/partners) for making the data required available. 
+Thanks go to the members of the [ESA SST CCI project consortium](http://esa-sst-cci.org/?q=project%20team) for making the data required available. 
 
 ### Unit-testing
 
@@ -36,7 +34,7 @@ Unit testing will be performed using `pytest` and its coverage plugin `pytest-co
 To run the unit-tests with coverage, type
 
     $ export NUMBA_DISABLE_JIT=1
-    $ py.test --cov=AVHRR_NOISE test
+    $ py.test --cov=SST_CDR_STATS test
     
 We need to set environment variable `NUMBA_DISABLE_JIT` to disable JIT compilation by `numba`, so that 
 coverage reaches the actual Python code. We use Numba's JIT compilation to speed up numeric Python 
@@ -45,7 +43,7 @@ number crunching code.
 ### Generating the Documentation
 
 The documentation will be generated with the [Sphinx](http://www.sphinx-doc.org/en/stable/rest.html) tool to create
-a [ReadTheDocs](http://AVHRR_NOISE.readthedocs.io/en/latest/?badge=latest). 
+a [ReadTheDocs](http://SST_CDR_STATS.readthedocs.io/en/latest/?badge=latest). 
 If there is a need to build the docs locally, some 
 additional software packages are required:
 
