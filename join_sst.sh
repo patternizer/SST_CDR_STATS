@@ -21,8 +21,6 @@ join(){
                 JOBNAME="${SAT}${year}${month}${day}"
 		LOGDIR="$FIDHOME/${SAT}/${year}/${month}/${day}"	       
 		if [ -d "$LOGDIR" ]; then
-#		    python join_sst.py ${SAT} ${year} ${month} ${day}  
-#		    echo ${JOBNAME}
                    LOGFILE=${LOGDIR}/run.log		    
  		    bsub -q short-serial -W24:00 -R "rusage[mem=$MEM_REQ]" -M $MEM_MAX -oo ${LOGFILE} -J "$JOBNAME" $INMYVENV $GENERATE "${SAT}" "${year}" "${month}" "${day}"
 		fi
@@ -33,11 +31,8 @@ join(){
     
 }
 
-#join AVHRR06_G 1979 1982
 join AVHRR07_G 1981 1985
-#join AVHRR08_G 1983 1985
 join AVHRR09_G 1985 1992
-#join AVHRR10_G 1986 1991
 join AVHRR11_G 1988 1995
 join AVHRR12_G 1991 1998
 join AVHRR14_G 1995 2002
