@@ -21,11 +21,11 @@ fix(){
 		LOGDIR="$FIDHOME/${SAT}/${year}/${month}/${day}"		
 		if [ -d "$LOGDIR" ]; then
 		    LOGFILE=${LOGDIR}/run.log
-#		    if grep -q "TERM_MEMLIMIT" ${LOGFILE}; then
-#			echo "exceeded memory limit ${JOBNAME}"
-#		    fi
+		    if grep -q "TERM_MEMLIMIT" ${LOGFILE}; then
+			echo "exceeded memory limit ${JOBNAME}"
+		    fi
 		    if ! grep -q "Successfully completed" ${LOGFILE}; then
-#			echo "submitting job ${JOBNAME}"  
+			echo "submitting job ${JOBNAME}"  
 			bsub -q short-serial -W24:00 -R "rusage[mem=$MEM_REQ]" -M $MEM_MAX -oo ${LOGFILE} -J "$JOBNAME" $INMYVENV $GENERATE "${SAT}" "${year}" "${month}" "${day}"
 		    fi
 		fi
@@ -34,11 +34,11 @@ fix(){
     done
 }
 
-#fix AVHRR06_G 1979 1982
+fix AVHRR06_G 1979 1982
 fix AVHRR07_G 1981 1985
-#fix AVHRR08_G 1983 1985
+fix AVHRR08_G 1983 1985
 fix AVHRR09_G 1985 1992
-#fix AVHRR10_G 1986 1991
+fix AVHRR10_G 1986 1991
 fix AVHRR11_G 1988 1995
 fix AVHRR12_G 1991 1998
 fix AVHRR14_G 1995 2002
