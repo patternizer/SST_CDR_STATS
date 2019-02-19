@@ -179,7 +179,7 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
     plt.legend(loc='best')
     plt.savefig('hist_sensitivity.png')
 
-def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertainty_q0_hist,total_uncertainty_q1_hist,total_uncertainty_q2_hist,total_uncertainty_q3_hist,total_uncertainty_q4_hist,total_uncertainty_q5_hist):
+def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertainty_q3_hist,total_uncertainty_q4_hist,total_uncertainty_q5_hist):
     """
     # --------------------------------------------
     # PLOT HISTOGRAM OF TOTAL UNCERTAINTY + MEDIAN
@@ -222,8 +222,12 @@ def plot_n_sst_timeseries(satellites):
     ocean_area = 361900000.0
 #    labels = ['NOAA06','NOAA07','NOAA08','NOAA09','NOAA10','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA','AATSR','ATSR1','ATSR2']
 #    satellites = ['AVHRR06_G','AVHRR07_G','AVHRR08_G','AVHRR09_G','AVHRR10_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
-    labels = ['NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA','AATSR','ATSR1','ATSR2']
-    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
+
+#    labels = ['NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA','AATSR','ATSR1','ATSR2']
+#    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
+
+    labels = ['NOAA07','NOAA09','NOAA11']
+    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G']
 
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
 
@@ -298,12 +302,14 @@ def calc_lat_fraction():
     z = ds.mask     
     land = z==2   
     f = 1 - (np.sum(land[0,:,:],axis=1) / len(x)*1.)
-    dlat = 0.05
-    lat_vec = np.arange(-90,90+dlat,dlat)
-    lat_fraction = np.zeros(len(lat_vec))
+    lat_vec = y
+    lat_fraction = f
 
-    for i in range(len(lat_vec)):     
-        lat_fraction[i]=f[i] 
+#    dlat = 0.05
+#    lat_vec = np.arange(-90,90,dlat)+0.025
+#    lat_fraction = np.zeros(len(lat_vec))
+#    for i in range(len(lat_vec)):     
+#        lat_fraction[i]=f.values[i] 
 
     exec(open('plot_landsea_mask.py').read())
 
@@ -313,7 +319,8 @@ def load_data(lat_fraction):
 
     ocean_area = 361900000.0
 #    satellites = ['AVHRR06_G','AVHRR07_G','AVHRR08_G','AVHRR09_G','AVHRR10_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
-    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
+#    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
+    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G']
     df = []
     for i in range(0,len(satellites)):
         filename = satellites[i] + '_summary.nc'
