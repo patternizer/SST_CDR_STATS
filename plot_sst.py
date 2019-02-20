@@ -25,8 +25,8 @@ import datetime
 import matplotlib
 import matplotlib.pyplot as plt; plt.close("all")
 
-from typhon.plots import plot_bitfield
-cmap = 'tab20c' # https://matplotlib.org/users/colormaps
+#from typhon.plots import plot_bitfield
+#cmap = 'tab20c' # https://matplotlib.org/users/colormaps
     
 def calc_median(counts,bins):
     """
@@ -226,8 +226,8 @@ def plot_n_sst_timeseries(satellites):
 #    labels = ['NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA','AATSR','ATSR1','ATSR2']
 #    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
 
-    labels = ['NOAA07','NOAA09','NOAA11']
-    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G']
+    labels = ['NOAA07','NOAA09','NOAA11','NOAA12']
+    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G']
 
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
 
@@ -311,7 +311,7 @@ def calc_lat_fraction():
 #    for i in range(len(lat_vec)):     
 #        lat_fraction[i]=f.values[i] 
 
-    exec(open('plot_landsea_mask.py').read())
+#    exec(open('plot_landsea_mask.py').read())
 
     return lat_fraction
 
@@ -320,7 +320,7 @@ def load_data(lat_fraction):
     ocean_area = 361900000.0
 #    satellites = ['AVHRR06_G','AVHRR07_G','AVHRR08_G','AVHRR09_G','AVHRR10_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
 #    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
-    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G']
+    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G']
     df = []
     for i in range(0,len(satellites)):
         filename = satellites[i] + '_summary.nc'
@@ -365,7 +365,7 @@ def load_data(lat_fraction):
     plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist)
     plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensitivity_q4_hist,sensitivity_q5_hist)
     plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertainty_q3_hist,total_uncertainty_q4_hist,total_uncertainty_q5_hist)
-    plot_n_sst_lat(lat_vec,n_sst_q3_lat,n_sst_q4_lat,n_sst_q5_lat)
+#    plot_n_sst_lat(lat_vec,n_sst_q3_lat,n_sst_q4_lat,n_sst_q5_lat)
     plot_n_sst(times,n_sst_q3,n_sst_q4,n_sst_q5)
     plot_n_sst_timeseries(satellites)
  
