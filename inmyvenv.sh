@@ -1,7 +1,6 @@
-#. /gws/nopw/j04/fiduceo/Users/mtaylor/anaconda3/etc/profile.d/conda.sh
-. /group_workspaces/cems2/fiduceo/Users/mtaylor/anaconda3/etc/profile.d/conda.sh
+. /gws/nopw/j04/fiduceo/Users/mtaylor/anaconda3/etc/profile.d/conda.sh
 export PATH=$PATH
-conda activate mike_cems
+conda activate mike
 export OMP_NUM_THREADS=1
 export USE_SIMPLE_THREADED_LEVEL3=1
 
