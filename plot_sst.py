@@ -3,7 +3,7 @@
 # PROGRAM: plot_sst.py
 # ----------------------------------------------------------------------------------
 # Version 0.9
-# 13 February, 2019
+# 24 February, 2019
 # michael.taylor AT reading DOT ac DOT uk
 
 # PYTHON DEBUGGER CONTROL:
