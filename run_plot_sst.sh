@@ -19,9 +19,9 @@
 # A copy of the GNU General Public License should have been supplied along                
 # with this program; if not, see http://www.gnu.org/licenses/                             
 
-echo '. /gws/nopw/j04/fiduceo/Users/mtaylor/anaconda3/bin/activate mike' > run.1.sh
-echo python run_plot_sst.py >> run.1.sh
+echo '. /gws/nopw/j04/fiduceo/Users/mtaylor/anaconda3/bin/activate mike' > run.plot_sst.sh
+echo python plot_sst.py >> run.plot_sst.sh
 
-bsub -q short-serial -W24:00 -R rusage[mem=60000] -M 60000 -oo run.1.log < run.1.sh
+bsub -q short-serial -W24:00 -R rusage[mem=60000] -M 60000 -oo run.1.log < run.plot_sst.sh
 
 
