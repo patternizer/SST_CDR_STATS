@@ -2,8 +2,8 @@
 
 # PROGRAM: plot_sst.py
 # ----------------------------------------------------------------------------------
-# Version 0.9
-# 24 February, 2019
+# Version 0.10
+# 05 March, 2019
 # michael.taylor AT reading DOT ac DOT uk
 
 # PYTHON DEBUGGER CONTROL:
@@ -89,21 +89,21 @@ def plot_n_sst_lat(lat_vec,n_sst_q3_lat,n_sst_q4_lat,n_sst_q5_lat):
     # PLOT SST OBSERVATION DENSITY WITH LATITUDE
     # ------------------------------------------
     """     
-    Q3 = 1800.0 * pd.Series(n_sst_q3_lat)
-    Q4 = 1800.0 * pd.Series(n_sst_q4_lat)
-    Q5 = 1800.0 * pd.Series(n_sst_q5_lat)
+    Q3 = pd.Series(n_sst_q3_lat)
+    Q4 = pd.Series(n_sst_q4_lat)
+    Q5 = pd.Series(n_sst_q5_lat)
     df = pd.DataFrame({'QL=3':Q3, 'QL=4':Q4, 'QL=5':Q5})
     df['QL=4 & 5'] = df['QL=4'] + df['QL=5']    
     df['QL=3 & 4 & 5'] = df['QL=3'] + df['QL=4'] + df['QL=5']    
     df = df.mask(np.isinf(df))
 
     fig = plt.figure()
-#   plt.fill_between(lat_vec, df['QL=4 & 5'],  step="pre", alpha=1.0, label='QL=4 & 5')
-#   plt.fill_between(lat_vec, df['QL=3'], step="pre", alpha=1.0, label='QL=3')
-    plt.plot(lat_vec, df['QL=4 & 5'], drawstyle='steps', label='QL=4 & 5')
-    plt.plot(lat_vec, df['QL=3'], drawstyle='steps', label='QL=3')
+    plt.fill_between(lat_vec, df['QL=4 & 5'],  step="pre", alpha=1.0, label='QL=4 & 5')
+    plt.fill_between(lat_vec, df['QL=3'], step="pre", alpha=1.0, label='QL=3')
+#    plt.plot(lat_vec, df['QL=4 & 5'], drawstyle='steps', label='QL=4 & 5')
+#    plt.plot(lat_vec, df['QL=3'], drawstyle='steps', label='QL=3')
     ax = plt.gca()    
-    ax.set_xlim([-85,85])
+    ax.set_xlim([-90,90])
     ticks = ax.get_xticks()
     ax.set_xticks(np.linspace(-90, 90, 7))
     plt.tick_params(labelsize=12)
@@ -118,10 +118,10 @@ def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
     # PLOT HISTOGRAM OF SST + MEDIAN
     # ------------------------------
     """     
-#   interpolation = np.arange(270,311,1) # 10x original resolutio
-#   multiplier = 10.0
-    interpolation = np.arange(260,320,0.1) # original resolution
-    multiplier = 1.0
+    interpolation = np.arange(270,311,1) # 10x original resolutio
+    multiplier = 10.0
+#    interpolation = np.arange(260,320,0.1) # original resolution
+#    multiplier = 1.0
     Q3 = multiplier * pd.Series(np.interp(interpolation,sst_midpoints,sst_q3_hist), index=interpolation)
     Q4 = multiplier * pd.Series(np.interp(interpolation,sst_midpoints,sst_q4_hist), index=interpolation)
     Q5 = multiplier * pd.Series(np.interp(interpolation,sst_midpoints,sst_q5_hist), index=interpolation)
@@ -130,13 +130,13 @@ def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
     df = df.mask(np.isinf(df))
 
     fig = plt.figure()
-#   plt.fill_between(interpolation,df['QL=4 & 5'], step="pre", alpha=0.4)
-#   plt.fill_between(interpolation,df['QL=3'], step="pre", alpha=0.4)
+    plt.fill_between(interpolation,df['QL=4 & 5'], step="pre", alpha=0.4)
+    plt.fill_between(interpolation,df['QL=3'], step="pre", alpha=0.4)
     plt.plot(interpolation,df['QL=4 & 5'], drawstyle='steps')
     plt.plot(interpolation,df['QL=3'], drawstyle='steps')
     ax = plt.gca()
-#    ax.set_xlim([270,310])
-    ax.set_xlim([260,320])
+    ax.set_xlim([270,310])
+#    ax.set_xlim([260,320])
     plt.tick_params(labelsize=12)
     plt.xlabel("SST / $\mathrm{K}$", fontsize=12)
     plt.ylabel("Frequency / $\mathrm{\% \ K^{-1}}$", fontsize=12)
@@ -166,13 +166,13 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
     df = df.mask(np.isinf(df))
    
     fig = plt.figure()
-#   plt.fill_between(100.0*interpolation,df['QL=4 & 5'], step="pre", alpha=0.4)
-#   plt.fill_between(100.0*interpolation,df['QL=3'], step="pre", alpha=0.4) 
+    plt.fill_between(100.0*interpolation,df['QL=4 & 5'], step="pre", alpha=0.4)
+    plt.fill_between(100.0*interpolation,df['QL=3'], step="pre", alpha=0.4) 
     plt.plot(100.0*interpolation,df['QL=4 & 5'], drawstyle='steps')
     plt.plot(100.0*interpolation,df['QL=3'], drawstyle='steps')
     ax = plt.gca()
-#    ax.set_xlim([88,110])
-    ax.set_xlim([0,200])
+    ax.set_xlim([85,110])
+#    ax.set_xlim([0,200])
     plt.tick_params(labelsize=12)
     plt.xlabel("Retrieval sensitivity / $\mathrm{\%}$", fontsize=12)
     plt.ylabel("Frequency / $\mathrm{\% \ {\%}^{-1} }$", fontsize=12)
@@ -202,13 +202,13 @@ def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertain
     df = df.mask(np.isinf(df))
  
     fig = plt.figure()
-#   plt.fill_between(total_uncertainty_midpoints,df['QL=4 & 5'], step="pre", alpha=0.4)
-#   plt.fill_between(total_uncertainty_midpoints,df['QL=3'], step="pre", alpha=0.4)
+    plt.fill_between(total_uncertainty_midpoints,df['QL=4 & 5'], step="pre", alpha=0.4)
+    plt.fill_between(total_uncertainty_midpoints,df['QL=3'], step="pre", alpha=0.4)
     plt.plot(total_uncertainty_midpoints,df['QL=4 & 5'], drawstyle='steps')
     plt.plot(total_uncertainty_midpoints,df['QL=3'], drawstyle='steps')
     ax = plt.gca()
-#    ax.set_xlim([0.0,1.2])
-    ax.set_xlim([0.0,4.0])
+    ax.set_xlim([0.0,1.25])
+#    ax.set_xlim([0.0,4.0])
     plt.tick_params(labelsize=12)
     plt.xlabel("Total uncertainty / $\mathrm{K}$", fontsize=12)
     plt.ylabel("Frequency / $\mathrm{\% \ cK^{-1}}$", fontsize=12)
@@ -228,9 +228,6 @@ def plot_n_sst_timeseries(satellites):
     # -------------------------------------------------------
     """     
     ocean_area = 361900000.0
-#    labels = ['NOAA06','NOAA07','NOAA08','NOAA09','NOAA10','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA','AATSR','ATSR1','ATSR2']
-#    satellites = ['AVHRR06_G','AVHRR07_G','AVHRR08_G','AVHRR09_G','AVHRR10_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
-
     labels = ['NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA','AATSR','ATSR1','ATSR2']
     satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
 
@@ -238,6 +235,8 @@ def plot_n_sst_timeseries(satellites):
 
     N = 0
     lab = []
+    ncolors = len(satellites)
+    ax1.set_prop_cycle('color',[plt.cm.gnuplot2(j) for j in np.linspace(0, 1, ncolors)])
     for i in range(0,len(satellites)):
         filename = satellites[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
@@ -250,20 +249,26 @@ def plot_n_sst_timeseries(satellites):
         times = times_duplicates.drop_duplicates()
         Q4_duplicates = pd.Series(ds['n_sst_q4'].values[idx], index=t)
         Q5_duplicates = pd.Series(ds['n_sst_q5'].values[idx], index=t)
-        n_sst_q4 = 100.0 * Q4_duplicates.groupby(Q4_duplicates.index).sum() / ocean_area / years
-        n_sst_q5 = 100.0 * Q5_duplicates.groupby(Q5_duplicates.index).sum() / ocean_area / years
+#        n_sst_q4 = Q4_duplicates.groupby(Q4_duplicates.index).sum() / ocean_area / years
+#        n_sst_q5 = Q5_duplicates.groupby(Q5_duplicates.index).sum() / ocean_area / years
+        n_sst_q4 = 365.0 * Q4_duplicates.groupby(Q4_duplicates.index).sum() / ocean_area 
+        n_sst_q5 = 365.0 * Q5_duplicates.groupby(Q5_duplicates.index).sum() / ocean_area 
         df = DataFrame({'Q4' : n_sst_q4, 'Q5' : n_sst_q5}) 
         df['Sum'] = df['Q4'].fillna(0) + df['Q5'].fillna(0)
-        df['Sum_mean'] = df['Sum'].resample("1d").sum().fillna(0).rolling(window=31, min_periods=1).median()
-        N += df['Sum_mean'].shape[0]
+#        df['Sum_mean'] = df['Sum'].resample("1d").sum().fillna(0).rolling(window=31, min_periods=1).median()
+#        N += df['Sum_mean'].shape[0]
+        N += df['Sum'].shape[0]
         lab.append(labels[i])
-        df['Sum_mean'].plot(ax=ax1)
+#        df['Sum_mean'].plot(ax=ax1)
+        df['Sum'].plot(ax=ax1)
     plt.tick_params(labelsize=12)
     title_str = 'QL=4 & 5'
     ax1.set_title(title_str, fontsize=10)
 
     N = 0
     lab = []
+    ncolors = len(satellites)
+    ax2.set_prop_cycle('color',[plt.cm.gnuplot2(j) for j in np.linspace(0, 1, ncolors)])
     for i in range(0,len(satellites)):
         filename = satellites[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
@@ -275,19 +280,22 @@ def plot_n_sst_timeseries(satellites):
         times_duplicates = pd.Series(t)
         times = times_duplicates.drop_duplicates()
         Q3_duplicates = pd.Series(ds['n_sst_q3'].values[idx], index=t)
-        n_sst_q3 = 100.0 * Q3_duplicates.groupby(Q3_duplicates.index).sum() / ocean_area / years
+#        n_sst_q3 = Q3_duplicates.groupby(Q3_duplicates.index).sum() / ocean_area / years
+        n_sst_q3 = 365.0 * Q3_duplicates.groupby(Q3_duplicates.index).sum() / ocean_area
         df = DataFrame({'Q3' : n_sst_q3})
-        df['Q3_mean'] = df['Q3'].resample("1d").sum().rolling(window=31, min_periods=1).median()
-        N += df['Q3_mean'].shape[0]
+#        df['Q3_mean'] = df['Q3'].resample("1d").sum().rolling(window=31, min_periods=1).median()
+#        N += df['Q3_mean'].shape[0]
+        N += df['Q3'].shape[0]
         lab.append(labels[i])
-        df['Q3_mean'].plot(ax=ax2)
+#        df['Q3_mean'].plot(ax=ax2)
+        df['Q3'].plot(ax=ax2)
     plt.tick_params(labelsize=12)
     title_str = 'QL=3'
     ax2.set_title(title_str, fontsize=10)
 
     fig.legend(lab, fontsize=8, loc=7)
     fig.subplots_adjust(right=0.8)  
-    fig.text(0.01, 0.5, 'Observation density / $\mathrm{100 \ km^{-2} \ yr^{-1}}$', va='center', rotation='vertical')
+    fig.text(0.01, 0.5, 'Observation density / $\mathrm{km^{-2} \ yr^{-1}}$', va='center', rotation='vertical')
     plt.savefig('n_sst_timeseries.png')
 
 def calc_lat_fraction():
