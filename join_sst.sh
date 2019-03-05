@@ -1,4 +1,4 @@
-x#!/bin/sh
+#!/bin/sh
 
 FIDHOME=/gws/nopw/j04/fiduceo/Users/mtaylor/sst
 INMYVENV=${FIDHOME}/inmyvenv.sh
@@ -21,14 +21,14 @@ join(){
                 JOBNAME="${SAT}${year}${month}${day}"
 		LOGDIR="$FIDHOME/${SAT}/${year}/${month}/${day}"	       
 		if [ -d "$LOGDIR" ]; then
-                   LOGFILE=${LOGDIR}/run.log		    
- 		    bsub -q short-serial -W24:00 -R "rusage[mem=$MEM_REQ]" -M $MEM_MAX -oo ${LOGFILE} -J "$JOBNAME" $INMYVENV $GENERATE "${SAT}" "${year}" "${month}" "${day}"
+		    python join_sst.py ${SAT} ${year} ${month} ${day} 
+		    echo ${JOBNAME}
+#                   LOGFILE=${LOGDIR}/run.log		    		   
+# 		   bsub -q short-serial -W24:00 -R "rusage[mem=$MEM_REQ]" -M $MEM_MAX -oo ${LOGFILE} -J "$JOBNAME" $INMYVENV $GENERATE "${SAT}" "${year}" "${month}" "${day}"
 		fi
-
 	    done
         done
-    done
-    
+    done    
 }
 
 join AVHRR07_G 1981 1985
