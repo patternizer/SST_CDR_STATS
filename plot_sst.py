@@ -89,19 +89,19 @@ def plot_n_sst_lat(lat_vec,n_sst_q3_lat,n_sst_q4_lat,n_sst_q5_lat):
     # PLOT SST OBSERVATION DENSITY WITH LATITUDE
     # ------------------------------------------
     """     
-    Q3 = 180.0 * pd.Series(n_sst_q3_lat)
-    Q4 = 180.0 * pd.Series(n_sst_q4_lat)
-    Q5 = 180.0 * pd.Series(n_sst_q5_lat)
+    Q3 = 1800.0 * pd.Series(n_sst_q3_lat)
+    Q4 = 1800.0 * pd.Series(n_sst_q4_lat)
+    Q5 = 1800.0 * pd.Series(n_sst_q5_lat)
     df = pd.DataFrame({'QL=3':Q3, 'QL=4':Q4, 'QL=5':Q5})
     df['QL=4 & 5'] = df['QL=4'] + df['QL=5']    
     df['QL=3 & 4 & 5'] = df['QL=3'] + df['QL=4'] + df['QL=5']    
     df = df.mask(np.isinf(df))
 
     fig = plt.figure()
-#    plt.plot(df['QL=3'], lat_vec, drawstyle='steps', label='QL=3')
-#    plt.plot(df['QL=4 & 5'], lat_vec, drawstyle='steps', label='QL=4 & 5')
-    plt.fill_between(lat_vec, df['QL=4 & 5'],  step="pre", alpha=1.0, label='QL=4 & 5')
-    plt.fill_between(lat_vec, df['QL=3'], step="pre", alpha=1.0, label='QL=3')
+#   plt.fill_between(lat_vec, df['QL=4 & 5'],  step="pre", alpha=1.0, label='QL=4 & 5')
+#   plt.fill_between(lat_vec, df['QL=3'], step="pre", alpha=1.0, label='QL=3')
+    plt.plot(lat_vec, df['QL=4 & 5'], drawstyle='steps', label='QL=4 & 5')
+    plt.plot(lat_vec, df['QL=3'], drawstyle='steps', label='QL=3')
     ax = plt.gca()    
     ax.set_xlim([-85,85])
     ticks = ax.get_xticks()
@@ -130,8 +130,8 @@ def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
     df = df.mask(np.isinf(df))
 
     fig = plt.figure()
-    plt.fill_between(interpolation,df['QL=4 & 5'], step="pre", alpha=0.4)
-    plt.fill_between(interpolation,df['QL=3'], step="pre", alpha=0.4)
+#   plt.fill_between(interpolation,df['QL=4 & 5'], step="pre", alpha=0.4)
+#   plt.fill_between(interpolation,df['QL=3'], step="pre", alpha=0.4)
     plt.plot(interpolation,df['QL=4 & 5'], drawstyle='steps')
     plt.plot(interpolation,df['QL=3'], drawstyle='steps')
     ax = plt.gca()
@@ -166,8 +166,8 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
     df = df.mask(np.isinf(df))
    
     fig = plt.figure()
-    plt.fill_between(100.0*interpolation,df['QL=4 & 5'], step="pre", alpha=0.4)
-    plt.fill_between(100.0*interpolation,df['QL=3'], step="pre", alpha=0.4) 
+#   plt.fill_between(100.0*interpolation,df['QL=4 & 5'], step="pre", alpha=0.4)
+#   plt.fill_between(100.0*interpolation,df['QL=3'], step="pre", alpha=0.4) 
     plt.plot(100.0*interpolation,df['QL=4 & 5'], drawstyle='steps')
     plt.plot(100.0*interpolation,df['QL=3'], drawstyle='steps')
     ax = plt.gca()
@@ -202,8 +202,8 @@ def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertain
     df = df.mask(np.isinf(df))
  
     fig = plt.figure()
-    plt.fill_between(total_uncertainty_midpoints,df['QL=4 & 5'], step="pre", alpha=0.4)
-    plt.fill_between(total_uncertainty_midpoints,df['QL=3'], step="pre", alpha=0.4)
+#   plt.fill_between(total_uncertainty_midpoints,df['QL=4 & 5'], step="pre", alpha=0.4)
+#   plt.fill_between(total_uncertainty_midpoints,df['QL=3'], step="pre", alpha=0.4)
     plt.plot(total_uncertainty_midpoints,df['QL=4 & 5'], drawstyle='steps')
     plt.plot(total_uncertainty_midpoints,df['QL=3'], drawstyle='steps')
     ax = plt.gca()
@@ -231,11 +231,8 @@ def plot_n_sst_timeseries(satellites):
 #    labels = ['NOAA06','NOAA07','NOAA08','NOAA09','NOAA10','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA','AATSR','ATSR1','ATSR2']
 #    satellites = ['AVHRR06_G','AVHRR07_G','AVHRR08_G','AVHRR09_G','AVHRR10_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
 
-#    labels = ['NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA','AATSR','ATSR1','ATSR2']
-#    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
-
-    labels = ['NOAA07','NOAA09','NOAA11','NOAA12','NOAA14']
-    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G']
+    labels = ['NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA','AATSR','ATSR1','ATSR2']
+    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
 
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
 
@@ -321,39 +318,49 @@ def calc_lat_fraction():
 
 #    exec(open('plot_landsea_mask.py').read())
 
-    return lat_fraction
+    return lat_vec, lat_fraction
 
-def load_data(lat_fraction):
+def load_data(lat_vec, lat_fraction):
 
     ocean_area = 361900000.0
 #    satellites = ['AVHRR06_G','AVHRR07_G','AVHRR08_G','AVHRR09_G','AVHRR10_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
-#    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
-    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G']
+    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
     df = []
     for i in range(0,len(satellites)):
         filename = satellites[i] + '_summary.nc'
         dsi = xarray.open_dataset(filename)
         df.append(dsi)
+        dsi = []
     ds = xarray.concat(df, dim='time')
+    df = []
     dates = ds['time']
-    idx = np.argsort(dates, axis=0) 
+    idx = np.argsort(dates, axis=0)
     t = np.array(dates)[idx]
     days = (t[-1] - t[0]).astype('timedelta64[D]') / np.timedelta64(1, 'D')
     years = days/365.0
     times_duplicates = pd.Series(t)
+
     times = times_duplicates.drop_duplicates()
+    dates = []
+    days = []
+    times_duplicates = []
 
     Q3_duplicates = pd.Series(ds['n_sst_q3'].values[idx], index=t)
     Q4_duplicates = pd.Series(ds['n_sst_q4'].values[idx], index=t)
     Q5_duplicates = pd.Series(ds['n_sst_q5'].values[idx], index=t)
+    idx = []
+
     n_sst_q3 = Q3_duplicates.groupby(Q3_duplicates.index).sum()
     n_sst_q4 = Q4_duplicates.groupby(Q4_duplicates.index).sum()
     n_sst_q5 = Q5_duplicates.groupby(Q5_duplicates.index).sum()
+    Q3_duplicates = []
+    Q4_duplicates = []
+    Q5_duplicates = []
 
-    lat_vec = ds['lat_vec']
-    n_sst_q3_lat = np.sum(ds['n_sst_q3_lat'],axis=0) / (lat_fraction * ocean_area) / years
-    n_sst_q4_lat = np.sum(ds['n_sst_q4_lat'],axis=0) / (lat_fraction * ocean_area) / years
-    n_sst_q5_lat = np.sum(ds['n_sst_q5_lat'],axis=0) / (lat_fraction * ocean_area) / years
+#    lat_vec = ds['lat_vec']
+    n_sst_q3_lat = np.sum(ds['n_sst_q3_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
+    n_sst_q4_lat = np.sum(ds['n_sst_q4_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
+    n_sst_q5_lat = np.sum(ds['n_sst_q5_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
 
     sst_midpoints = ds['sst_midpoints']
     sst_q3_hist = 100.0 * np.sum(ds['sst_q3_hist'],axis=0) / np.sum(np.sum(ds['sst_q3_hist'],axis=0))
@@ -374,12 +381,12 @@ def load_data(lat_fraction):
     plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensitivity_q4_hist,sensitivity_q5_hist)
     plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertainty_q3_hist,total_uncertainty_q4_hist,total_uncertainty_q5_hist)
     plot_n_sst(times,n_sst_q3,n_sst_q4,n_sst_q5)
+    plot_n_sst_timeseries(satellites)
     plot_n_sst_lat(lat_vec,n_sst_q3_lat,n_sst_q4_lat,n_sst_q5_lat)
-#    plot_n_sst_timeseries(satellites)
  
 if __name__ == "__main__":
 
-    lat_fraction = calc_lat_fraction()
-    load_data(lat_fraction)
+    lat_vec, lat_fraction = calc_lat_fraction()
+    load_data(lat_vec, lat_fraction)
 
 
