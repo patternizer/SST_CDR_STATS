@@ -2,8 +2,8 @@
 
 # PROGRAM: plot_sst.py
 # ----------------------------------------------------------------------------------
-# Version 0.10
-# 05 March, 2019
+# Version 0.11
+# 06 March, 2019
 # michael.taylor AT reading DOT ac DOT uk
 
 # PYTHON DEBUGGER CONTROL:
@@ -79,7 +79,7 @@ def plot_n_sst(times,n_sst_q3,n_sst_q4,n_sst_q5):
     plt.tick_params(labelsize=12)
     plt.ylabel("Observation density / $\mathrm{km^{-2} \ yr^{-1}}$", fontsize=12)
     title_str = ' ' + 'QL=3:max=' + "{0:.2f}".format(df['QL=3'].cumsum().max()) + ' ' + 'QL=4 & 5:max=' + "{0:.2f}".format(df['QL=4 & 5'].cumsum().max())
-    plt.title(title_str, fontsize=10)
+#    plt.title(title_str, fontsize=10)
     plt.legend(loc='best')
     plt.savefig('n_sst.png')    
 
@@ -98,8 +98,8 @@ def plot_n_sst_lat(lat_vec,n_sst_q3_lat,n_sst_q4_lat,n_sst_q5_lat):
     df = df.mask(np.isinf(df))
 
     fig = plt.figure()
-    plt.fill_between(lat_vec, df['QL=4 & 5'],  step="pre", alpha=1.0, label='QL=4 & 5')
-    plt.fill_between(lat_vec, df['QL=3'], step="pre", alpha=1.0, label='QL=3')
+    plt.fill_between(lat_vec, df['QL=4 & 5'],  step="mid", alpha=1.0, label='QL=4 & 5')
+    plt.fill_between(lat_vec, df['QL=3'], step="mid", alpha=1.0, label='QL=3')
 #    plt.plot(lat_vec, df['QL=4 & 5'], drawstyle='steps', label='QL=4 & 5')
 #    plt.plot(lat_vec, df['QL=3'], drawstyle='steps', label='QL=3')
     ax = plt.gca()    
@@ -130,8 +130,8 @@ def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
     df = df.mask(np.isinf(df))
 
     fig = plt.figure()
-    plt.fill_between(interpolation,df['QL=4 & 5'], step="pre", alpha=0.4)
-    plt.fill_between(interpolation,df['QL=3'], step="pre", alpha=0.4)
+    plt.fill_between(interpolation,df['QL=4 & 5'], step="post", alpha=0.4)
+    plt.fill_between(interpolation,df['QL=3'], step="post", alpha=0.4)
     plt.plot(interpolation,df['QL=4 & 5'], drawstyle='steps')
     plt.plot(interpolation,df['QL=3'], drawstyle='steps')
     ax = plt.gca()
@@ -141,8 +141,11 @@ def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
     plt.xlabel("SST / $\mathrm{K}$", fontsize=12)
     plt.ylabel("Frequency / $\mathrm{\% \ K^{-1}}$", fontsize=12)
  
-    M3 = calc_median(df['QL=3'],interpolation)
-    M4_5 = calc_median(df['QL=4 & 5'],interpolation)
+#    M3 = calc_median(df['QL=3'],interpolation)
+#    M4_5 = calc_median(df['QL=4 & 5'],interpolation)
+    M3 = calc_median(sst_q3_hist,sst_midpoints)
+    M4_5 = calc_median(0.5*(sst_q4_hist+sst_q5_hist),sst_midpoints)
+
 #    title_str = 'QL=3:sum=' + "{0:.2f}".format(df['QL=3'].sum()) + ' ' + 'QL=4 & 5:sum=' + "{0:.2f}".format(df['QL=4 & 5'].sum())
     title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
     plt.title(title_str, fontsize=10)
@@ -166,8 +169,8 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
     df = df.mask(np.isinf(df))
    
     fig = plt.figure()
-    plt.fill_between(100.0*interpolation,df['QL=4 & 5'], step="pre", alpha=0.4)
-    plt.fill_between(100.0*interpolation,df['QL=3'], step="pre", alpha=0.4) 
+    plt.fill_between(100.0*interpolation,df['QL=4 & 5'], step="post", alpha=0.4)
+    plt.fill_between(100.0*interpolation,df['QL=3'], step="post", alpha=0.4) 
     plt.plot(100.0*interpolation,df['QL=4 & 5'], drawstyle='steps')
     plt.plot(100.0*interpolation,df['QL=3'], drawstyle='steps')
     ax = plt.gca()
@@ -177,8 +180,11 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
     plt.xlabel("Retrieval sensitivity / $\mathrm{\%}$", fontsize=12)
     plt.ylabel("Frequency / $\mathrm{\% \ {\%}^{-1} }$", fontsize=12)
 
-    M3 = calc_median(df['QL=3'],interpolation)
-    M4_5 = calc_median(df['QL=4 & 5'],interpolation)
+#    M3 = calc_median(df['QL=3'],interpolation)
+#    M4_5 = calc_median(df['QL=4 & 5'],interpolation)
+    M3 = calc_median(sensitivity_q3_hist,sensitivity_midpoints)
+    M4_5 = calc_median(0.5*(sensitivity_q4_hist+sensitivity_q5_hist),sensitivity_midpoints)
+
 #    title_str = 'QL=3:sum=' + "{0:.2f}".format(df['QL=3'].sum()) + ' ' + 'QL=4 & 5:sum=' + "{0:.2f}".format(df['QL=4 & 5'].sum())
     title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
     plt.title(title_str, fontsize=10)
@@ -202,8 +208,8 @@ def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertain
     df = df.mask(np.isinf(df))
  
     fig = plt.figure()
-    plt.fill_between(total_uncertainty_midpoints,df['QL=4 & 5'], step="pre", alpha=0.4)
-    plt.fill_between(total_uncertainty_midpoints,df['QL=3'], step="pre", alpha=0.4)
+    plt.fill_between(total_uncertainty_midpoints,df['QL=4 & 5'], step="post", alpha=0.4)
+    plt.fill_between(total_uncertainty_midpoints,df['QL=3'], step="post", alpha=0.4)
     plt.plot(total_uncertainty_midpoints,df['QL=4 & 5'], drawstyle='steps')
     plt.plot(total_uncertainty_midpoints,df['QL=3'], drawstyle='steps')
     ax = plt.gca()
@@ -213,13 +219,73 @@ def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertain
     plt.xlabel("Total uncertainty / $\mathrm{K}$", fontsize=12)
     plt.ylabel("Frequency / $\mathrm{\% \ cK^{-1}}$", fontsize=12)
 
-    M3 = calc_median(df['QL=3'],interpolation)
-    M4_5 = calc_median(df['QL=4 & 5'],interpolation)
+#    M3 = calc_median(df['QL=3'],interpolation)
+#    M4_5 = calc_median(df['QL=4 & 5'],interpolation)
+    M3 = calc_median(total_uncertainty_q3_hist,total_uncertainty_midpoints)
+    M4_5 = calc_median(0.5*(total_uncertainty_q4_hist+total_uncertainty_q5_hist),total_uncertainty_midpoints)
 #    title_str = 'QL=3:sum=' + "{0:.2f}".format(df['QL=3'].sum()) + ' ' + 'QL=4 & 5:sum=' + "{0:.2f}".format(df['QL=4 & 5'].sum())
     title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
     plt.title(title_str, fontsize=10)
     plt.legend(loc='best')
     plt.savefig('hist_total_uncertainty.png')
+
+def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertainty_q3_hist_avhrr,total_uncertainty_q4_hist_avhrr,total_uncertainty_q5_hist_avhrr,total_uncertainty_q3_hist_atsr,total_uncertainty_q4_hist_atsr,total_uncertainty_q5_hist_atsr):
+    """
+    # --------------------------------------------------------------
+    # PLOT HISTOGRAM OF TOTAL UNCERTAINTY + MEDIAN FOR AVHRR VS ATSR
+    # --------------------------------------------------------------
+    """     
+    interpolation = np.arange(0.00,4.00,0.01) 
+    multiplier = 1.0
+
+    Q3_avhrr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q3_hist_avhrr), index=interpolation)
+    Q4_avhrr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q4_hist_avhrr), index=interpolation)
+    Q5_avhrr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q5_hist_avhrr), index=interpolation)
+    df_avhrr = pd.DataFrame({'QL=3':Q3_avhrr, 'QL=4':Q4_avhrr, 'QL=5':Q5_avhrr})
+    df_avhrr['QL=4 & 5'] = 0.5 * (df_avhrr['QL=4'] + df_avhrr['QL=5'])
+    df_avhrr = df_avhrr.mask(np.isinf(df_avhrr))
+
+    Q3_atsr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q3_hist_atsr), index=interpolation)
+    Q4_atsr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q4_hist_atsr), index=interpolation)
+    Q5_atsr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q5_hist_atsr), index=interpolation)
+    df_atsr = pd.DataFrame({'QL=3':Q3_atsr, 'QL=4':Q4_atsr, 'QL=5':Q5_atsr})
+    df_atsr['QL=4 & 5'] = 0.5 * (df_atsr['QL=4'] + df_atsr['QL=5'])
+    df_atsr = df_atsr.mask(np.isinf(df_atsr))
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+ 
+    ax1.plt.fill_between(total_uncertainty_midpoints,df_avhrr['QL=4 & 5'], step="post", alpha=0.4)
+    ax1.plt.fill_between(total_uncertainty_midpoints,df_avhrr['QL=3'], step="post", alpha=0.4)
+    ax1.plt.plot(total_uncertainty_midpoints,df_avhrr['QL=4 & 5'], drawstyle='steps')
+    ax1.plt.plot(total_uncertainty_midpoints,df_avhrr['QL=3'], drawstyle='steps')
+    ax1.set_xlim([0.0,1.25])
+    plt.tick_params(labelsize=12)
+#    M3 = calc_median(df_avhrr['QL=3'],interpolation)
+#    M4_5 = calc_median(df_avhrr['QL=4 & 5'],interpolation)
+    M3 = calc_median(total_uncertainty_q3_hist_avhrr,total_uncertainty_midpoints)
+    M4_5 = calc_median(0.5*(total_uncertainty_q4_hist_avhrr+total_uncertainty_q5_hist_avhrr),total_uncertainty_midpoints)
+    title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
+    ax1.set_title(title_str, fontsize=10)
+
+    ax2.plt.fill_between(total_uncertainty_midpoints,df_atsr['QL=4 & 5'], step="post", alpha=0.4)
+    ax2.plt.fill_between(total_uncertainty_midpoints,df_atsr['QL=3'], step="post", alpha=0.4)
+    ax2.plt.plot(total_uncertainty_midpoints,df_atsr['QL=4 & 5'], drawstyle='steps')
+    ax2.plt.plot(total_uncertainty_midpoints,df_atsr['QL=3'], drawstyle='steps')
+    ax2.set_xlim([0.0,1.25])
+    plt.tick_params(labelsize=12)
+    plt.xlabel("Total uncertainty / $\mathrm{K}$", fontsize=12)
+#    M3 = calc_median(df_atsr['QL=3'],interpolation)
+#    M4_5 = calc_median(df_atsr['QL=4 & 5'],interpolation)
+    M3 = calc_median(total_uncertainty_q3_hist_atsr,total_uncertainty_midpoints)
+    M4_5 = calc_median(0.5*(total_uncertainty_q4_hist_atsr+total_uncertainty_q5_hist_atsr),total_uncertainty_midpoints)
+    title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
+    ax1.set_title(title_str, fontsize=10)
+
+#    plt.legend(loc='best')
+    fig.legend(fontsize=8, loc=7)
+    fig.subplots_adjust(right=0.8)  
+    fig.text(0.01, 0.5, 'Frequency / $\mathrm{\% \ cK^{-1}}$', va='center', rotation='vertical', fontsize=12)
+    plt.savefig('hist_total_uncertainty2.png')
 
 def plot_n_sst_timeseries(satellites):
     """
@@ -228,8 +294,11 @@ def plot_n_sst_timeseries(satellites):
     # -------------------------------------------------------
     """     
     ocean_area = 361900000.0
-    labels = ['NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA','AATSR','ATSR1','ATSR2']
-    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
+#    labels = ['NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA','AATSR','ATSR1','ATSR2']
+#    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
+
+    labels = ['ATSR1','ATSR2','AATSR','NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA']
+    satellites = ['ATSR1','ATSR2','AATSR','AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
 
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
 
@@ -260,7 +329,12 @@ def plot_n_sst_timeseries(satellites):
         N += df['Sum'].shape[0]
         lab.append(labels[i])
 #        df['Sum_mean'].plot(ax=ax1)
-        df['Sum'].plot(ax=ax1)
+#        df['Sum'].plot(ax=ax1)
+        ax1.plot(times, df['Sum'], '-', markersize=0.2)
+        ax1.set_ylim([0,18])
+
+        print(labels[i] + ":" + df['Sum'].mean())
+
     plt.tick_params(labelsize=12)
     title_str = 'QL=4 & 5'
     ax1.set_title(title_str, fontsize=10)
@@ -288,7 +362,12 @@ def plot_n_sst_timeseries(satellites):
         N += df['Q3'].shape[0]
         lab.append(labels[i])
 #        df['Q3_mean'].plot(ax=ax2)
-        df['Q3'].plot(ax=ax2)
+#        df['Q3'].plot(ax=ax2)
+        ax2.plot(times, df['Q3'], '-', markersize=0.2)
+        ax2.set_ylim([0,18])
+
+        print(labels[i] + ":" + df['Q3'].mean())
+
     plt.tick_params(labelsize=12)
     title_str = 'QL=3'
     ax2.set_title(title_str, fontsize=10)
@@ -385,9 +464,36 @@ def load_data(lat_vec, lat_fraction):
     total_uncertainty_q4_hist = 100.0 * np.sum(ds['total_uncertainty_q4_hist'],axis=0) / np.sum(np.sum(ds['total_uncertainty_q4_hist'],axis=0))
     total_uncertainty_q5_hist = 100.0 * np.sum(ds['total_uncertainty_q5_hist'],axis=0) / np.sum(np.sum(ds['total_uncertainty_q5_hist'],axis=0))
     
+    satellites_avhrr = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
+    df = []
+    for i in range(0,len(satellites_avhrr)):
+        filename = satellites_avhrr[i] + '_summary.nc'
+        dsi = xarray.open_dataset(filename)
+        df.append(dsi)
+        dsi = []
+    ds_avhrr = xarray.concat(df, dim='time')
+    total_uncertainty_q3_hist_avhrr = 100.0 * np.sum(ds_avhrr['total_uncertainty_q3_hist'],axis=0) / np.sum(np.sum(ds_avhrr['total_uncertainty_q3_hist'],axis=0))
+    total_uncertainty_q4_hist_avhrr = 100.0 * np.sum(ds_avhrr['total_uncertainty_q4_hist'],axis=0) / np.sum(np.sum(ds_avhrr['total_uncertainty_q4_hist'],axis=0))
+    total_uncertainty_q5_hist_avhrr = 100.0 * np.sum(ds_avhrr['total_uncertainty_q5_hist'],axis=0) / np.sum(np.sum(ds_avhrr['total_uncertainty_q5_hist'],axis=0))
+
+    satellites_atsr = ['AATSR','ATSR1','ATSR2']
+    df = []
+    for i in range(0,len(satellites_atsr)):
+        filename = satellites_atsr[i] + '_summary.nc'
+        dsi = xarray.open_dataset(filename)
+        df.append(dsi)
+        dsi = []
+    ds_atsr = xarray.concat(df, dim='time')
+    total_uncertainty_q3_hist_atsr = 100.0 * np.sum(ds_atsr['total_uncertainty_q3_hist'],axis=0) / np.sum(np.sum(ds_atsr['total_uncertainty_q3_hist'],axis=0))
+    total_uncertainty_q4_hist_atsr = 100.0 * np.sum(ds_atsr['total_uncertainty_q4_hist'],axis=0) / np.sum(np.sum(ds_atsr['total_uncertainty_q4_hist'],axis=0))
+    total_uncertainty_q5_hist_atsr = 100.0 * np.sum(ds_atsr['total_uncertainty_q5_hist'],axis=0) / np.sum(np.sum(ds_atsr['total_uncertainty_q5_hist'],axis=0))
+
     plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist)
     plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensitivity_q4_hist,sensitivity_q5_hist)
     plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertainty_q3_hist,total_uncertainty_q4_hist,total_uncertainty_q5_hist)
+
+    plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertainty_q3_hist_avhrr,total_uncertainty_q4_hist_avhrr,total_uncertainty_q5_hist_avhrr,total_uncertainty_q3_hist_atsr,total_uncertainty_q4_hist_atsr,total_uncertainty_q5_hist_atsr)
+
     plot_n_sst(times,n_sst_q3,n_sst_q4,n_sst_q5)
     plot_n_sst_timeseries(satellites)
     plot_n_sst_lat(lat_vec,n_sst_q3_lat,n_sst_q4_lat,n_sst_q5_lat)
