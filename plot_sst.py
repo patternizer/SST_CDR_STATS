@@ -95,13 +95,13 @@ def plot_n_sst_lat(lat_vec,n_sst_q3_lat,n_sst_q4_lat,n_sst_q5_lat):
     df = pd.DataFrame({'QL=3':Q3, 'QL=4':Q4, 'QL=5':Q5})
     df['QL=4 & 5'] = df['QL=4'] + df['QL=5']    
     df['QL=3 & 4 & 5'] = df['QL=3'] + df['QL=4'] + df['QL=5']    
-    df = df.mask(np.isinf(df))
+#    df = df.mask(np.isinf(df))
 
     fig = plt.figure()
-    plt.fill_between(lat_vec, df['QL=4 & 5'],  step="mid", alpha=1.0, label='QL=4 & 5')
-    plt.fill_between(lat_vec, df['QL=3'], step="mid", alpha=1.0, label='QL=3')
-#    plt.plot(lat_vec, df['QL=4 & 5'], drawstyle='steps', label='QL=4 & 5')
-#    plt.plot(lat_vec, df['QL=3'], drawstyle='steps', label='QL=3')
+#    plt.fill_between(lat_vec, df['QL=4 & 5'],  step="mid", alpha=1.0, label='QL=4 & 5')
+#    plt.fill_between(lat_vec, df['QL=3'], step="mid", alpha=1.0, label='QL=3')
+    plt.plot(lat_vec, df['QL=4 & 5'], drawstyle='steps', label='QL=4 & 5')
+    plt.plot(lat_vec, df['QL=3'], drawstyle='steps', label='QL=3')
     ax = plt.gca()    
     ax.set_xlim([-90,90])
     ticks = ax.get_xticks()
@@ -118,10 +118,10 @@ def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
     # PLOT HISTOGRAM OF SST + MEDIAN
     # ------------------------------
     """     
-    interpolation = np.arange(270,311,1) # 10x original resolutio
-    multiplier = 10.0
-#    interpolation = np.arange(260,320,0.1) # original resolution
+#    interpolation = np.arange(260.05,319.95,0.1) # original resolution
 #    multiplier = 1.0
+    interpolation = np.arange(260,320,1) # 10x original resolution
+    multiplier = 10.0
     Q3 = multiplier * pd.Series(np.interp(interpolation,sst_midpoints,sst_q3_hist), index=interpolation)
     Q4 = multiplier * pd.Series(np.interp(interpolation,sst_midpoints,sst_q4_hist), index=interpolation)
     Q5 = multiplier * pd.Series(np.interp(interpolation,sst_midpoints,sst_q5_hist), index=interpolation)
@@ -135,18 +135,23 @@ def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
     plt.plot(interpolation,df['QL=4 & 5'], drawstyle='steps')
     plt.plot(interpolation,df['QL=3'], drawstyle='steps')
     ax = plt.gca()
-    ax.set_xlim([270,310])
-#    ax.set_xlim([260,320])
+    ax.set_xlim([260,310])
     plt.tick_params(labelsize=12)
     plt.xlabel("SST / $\mathrm{K}$", fontsize=12)
     plt.ylabel("Frequency / $\mathrm{\% \ K^{-1}}$", fontsize=12)
 
     M3 = calc_median(df['QL=3'],interpolation)
     M4_5 = calc_median(df['QL=4 & 5'],interpolation)
-#    M3 = calc_median(sst_q3_hist,sst_midpoints)
-#    M4_5 = calc_median(0.5*(sst_q4_hist+sst_q5_hist),sst_midpoints)
 
-#    title_str = 'QL=3:sum=' + "{0:.2f}".format(df['QL=3'].sum()) + ' ' + 'QL=4 & 5:sum=' + "{0:.2f}".format(df['QL=4 & 5'].sum())
+    Median3 = calc_median(sst_q3_hist,sst_midpoints)
+    Median4_5 = calc_median(0.5*(sst_q4_hist+sst_q5_hist),sst_midpoints)
+    print("SST: M3=" + str(M3))
+    print("Raw: M3=" + str(Median3))
+    print("Sum: M3=" + str(df['QL=3'].sum()))
+    print("SST: M4_5=" + str(M4_5))
+    print("Raw: M4_5=" + str(Median4_5))
+    print("Sum: M4_5=" + str(df['QL=4 & 5'].sum()))
+
     title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
     plt.title(title_str, fontsize=10)
     plt.legend(loc='best')
@@ -158,7 +163,8 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
     # PLOT HISTOGRAM OF RETRIEVAL SENSITIVITY + MEDIAN
     # ------------------------------------------------
     """     
-    interpolation = np.arange(0.0,2.01,0.01) # original resolution
+#    interpolation = np.arange(0.005,1.995,0.01) # original resolution
+    interpolation = np.arange(0,2,0.01)
     multiplier = 1.0
     Q3 = multiplier * pd.Series(np.interp(interpolation,sensitivity_midpoints,sensitivity_q3_hist), index=interpolation)
     Q4 = multiplier * pd.Series(np.interp(interpolation,sensitivity_midpoints,sensitivity_q4_hist), index=interpolation)
@@ -175,17 +181,22 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
     plt.plot(100.0*interpolation,df['QL=3'], drawstyle='steps')
     ax = plt.gca()
     ax.set_xlim([85,110])
-#    ax.set_xlim([0,200])
     plt.tick_params(labelsize=12)
     plt.xlabel("Retrieval sensitivity / $\mathrm{\%}$", fontsize=12)
     plt.ylabel("Frequency / $\mathrm{\% \ {\%}^{-1} }$", fontsize=12)
 
     M3 = calc_median(df['QL=3'],interpolation)
     M4_5 = calc_median(df['QL=4 & 5'],interpolation)
-#    M3 = calc_median(sensitivity_q3_hist,sensitivity_midpoints)
-#    M4_5 = calc_median(0.5*(sensitivity_q4_hist+sensitivity_q5_hist),sensitivity_midpoints)
 
-#    title_str = 'QL=3:sum=' + "{0:.2f}".format(df['QL=3'].sum()) + ' ' + 'QL=4 & 5:sum=' + "{0:.2f}".format(df['QL=4 & 5'].sum())
+    Median3 = calc_median(sensitivity_q3_hist,sensitivity_midpoints)
+    Median4_5 = calc_median(0.5*(sensitivity_q4_hist+sensitivity_q5_hist),sensitivity_midpoints)
+    print("Retrieval Sensitivity: M3=" + str(M3))
+    print("Raw: M3=" + str(Median3))
+    print("Sum: M3=" + str(df['QL=3'].sum()))
+    print("Retrieval Sensitivity: M4_5=" + str(M4_5))
+    print("Raw: M4_5=" + str(Median4_5))
+    print("Sum: M4_5=" + str(df['QL=4 & 5'].sum()))
+
     title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
     plt.title(title_str, fontsize=10)
     plt.legend(loc='best')
@@ -197,7 +208,8 @@ def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertain
     # PLOT HISTOGRAM OF TOTAL UNCERTAINTY + MEDIAN
     # --------------------------------------------
     """     
-    interpolation = np.arange(0.00,4.00,0.01) 
+#    interpolation = np.arange(0.005,3.995+0.01,0.01) # original resolution
+    interpolation = np.arange(0,4,0.01)
     multiplier = 1.0
     Q3 = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q3_hist), index=interpolation)
     Q4 = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q4_hist), index=interpolation)
@@ -205,7 +217,7 @@ def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertain
 
     df = pd.DataFrame({'QL=3':Q3, 'QL=4':Q4, 'QL=5':Q5})
     df['QL=4 & 5'] = 0.5 * (df['QL=4'] + df['QL=5'])
-    df = df.mask(np.isinf(df))
+#    df = df.mask(np.isinf(df))
  
     fig = plt.figure()
     plt.fill_between(total_uncertainty_midpoints,df['QL=4 & 5'], step="pre", alpha=0.4)
@@ -214,17 +226,22 @@ def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertain
     plt.plot(total_uncertainty_midpoints,df['QL=3'], drawstyle='steps')
     ax = plt.gca()
     ax.set_xlim([0.0,1.25])
-#    ax.set_xlim([0.0,4.0])
     plt.tick_params(labelsize=12)
     plt.xlabel("Total uncertainty / $\mathrm{K}$", fontsize=12)
     plt.ylabel("Frequency / $\mathrm{\% \ cK^{-1}}$", fontsize=12)
 
     M3 = calc_median(df['QL=3'],interpolation)
     M4_5 = calc_median(df['QL=4 & 5'],interpolation)
-#    M3 = calc_median(total_uncertainty_q3_hist,total_uncertainty_midpoints)
-#    M4_5 = calc_median(0.5*(total_uncertainty_q4_hist+total_uncertainty_q5_hist),total_uncertainty_midpoints)
 
-#    title_str = 'QL=3:sum=' + "{0:.2f}".format(df['QL=3'].sum()) + ' ' + 'QL=4 & 5:sum=' + "{0:.2f}".format(df['QL=4 & 5'].sum())
+    Median3 = calc_median(total_uncertainty_q3_hist,total_uncertainty_midpoints)
+    Median4_5 = calc_median(0.5*(total_uncertainty_q4_hist+total_uncertainty_q5_hist),total_uncertainty_midpoints)
+    print("Total Uncertainty: M3=" + str(M3))
+    print("Raw: M3=" + str(Median3))
+    print("Sum: M3=" + str( df['QL=3'].sum() ))
+    print("Total Uncertainty: M4_5=" + str(M4_5))
+    print("Raw: M4_5=" + str(Median4_5))
+    print("Sum: M4_5=" + str( df['QL=4 & 5'].sum() ))
+
     title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
     plt.title(title_str, fontsize=10)
     plt.legend(loc='best')
@@ -236,7 +253,8 @@ def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertai
     # PLOT HISTOGRAM OF TOTAL UNCERTAINTY + MEDIAN FOR AVHRR VS ATSR
     # --------------------------------------------------------------
     """     
-    interpolation = np.arange(0.00,4.00,0.01) 
+#    interpolation = np.arange(0.005,3.995,0.01) # original resolution 
+    interpolation = np.arange(0,4,0.01)
     multiplier = 1.0
 
     Q3_avhrr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q3_hist_avhrr), index=interpolation)
@@ -244,14 +262,14 @@ def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertai
     Q5_avhrr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q5_hist_avhrr), index=interpolation)
     df_avhrr = pd.DataFrame({'QL=3':Q3_avhrr, 'QL=4':Q4_avhrr, 'QL=5':Q5_avhrr})
     df_avhrr['QL=4 & 5'] = 0.5 * (df_avhrr['QL=4'] + df_avhrr['QL=5'])
-    df_avhrr = df_avhrr.mask(np.isinf(df_avhrr))
+#    df_avhrr = df_avhrr.mask(np.isinf(df_avhrr))
 
     Q3_atsr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q3_hist_atsr), index=interpolation)
     Q4_atsr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q4_hist_atsr), index=interpolation)
     Q5_atsr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q5_hist_atsr), index=interpolation)
     df_atsr = pd.DataFrame({'QL=3':Q3_atsr, 'QL=4':Q4_atsr, 'QL=5':Q5_atsr})
     df_atsr['QL=4 & 5'] = 0.5 * (df_atsr['QL=4'] + df_atsr['QL=5'])
-    df_atsr = df_atsr.mask(np.isinf(df_atsr))
+#    df_atsr = df_atsr.mask(np.isinf(df_atsr))
 
     fig = plt.figure()    
     plt.fill_between(total_uncertainty_midpoints,df_avhrr['QL=4 & 5'], step="pre", alpha=0.4)
@@ -265,8 +283,6 @@ def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertai
     plt.ylabel("Frequency / $\mathrm{\% \ cK^{-1}}$", fontsize=12)
     M3 = calc_median(df_avhrr['QL=3'],interpolation)
     M4_5 = calc_median(df_avhrr['QL=4 & 5'],interpolation)
-#    M3 = calc_median(total_uncertainty_q3_hist_avhrr,total_uncertainty_midpoints)
-#    M4_5 = calc_median(0.5*(total_uncertainty_q4_hist_avhrr+total_uncertainty_q5_hist_avhrr),total_uncertainty_midpoints)
     title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
     plt.title(title_str, fontsize=10)
     plt.legend(loc='best')
@@ -284,8 +300,6 @@ def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertai
     plt.ylabel("Frequency / $\mathrm{\% \ cK^{-1}}$", fontsize=12)
     M3 = calc_median(df_atsr['QL=3'],interpolation)
     M4_5 = calc_median(df_atsr['QL=4 & 5'],interpolation)
-#    M3 = calc_median(total_uncertainty_q3_hist_atsr,total_uncertainty_midpoints)
-#    M4_5 = calc_median(0.5*(total_uncertainty_q4_hist_atsr+total_uncertainty_q5_hist_atsr),total_uncertainty_midpoints)
     title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
     plt.title(title_str, fontsize=10)
     plt.legend(loc='best')
@@ -298,15 +312,11 @@ def plot_n_sst_timeseries(satellites):
     # -------------------------------------------------------
     """     
     ocean_area = 361900000.0
-#    labels = ['NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA','AATSR','ATSR1','ATSR2']
-#    satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
-
     labels = ['ATSR1','ATSR2','AATSR','NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA']
     satellites = ['ATSR1','ATSR2','AATSR','AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
 
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
 
-    N = 0
     lab = []
     ncolors = len(satellites)
     ax1.set_prop_cycle('color',[plt.cm.gnuplot2(j) for j in np.linspace(0, 1, ncolors)])
@@ -322,28 +332,23 @@ def plot_n_sst_timeseries(satellites):
         times = times_duplicates.drop_duplicates()
         Q4_duplicates = pd.Series(ds['n_sst_q4'].values[idx], index=t)
         Q5_duplicates = pd.Series(ds['n_sst_q5'].values[idx], index=t)
-#        n_sst_q4 = Q4_duplicates.groupby(Q4_duplicates.index).sum() / ocean_area / years
-#        n_sst_q5 = Q5_duplicates.groupby(Q5_duplicates.index).sum() / ocean_area / years
         n_sst_q4 = 365.0 * Q4_duplicates.groupby(Q4_duplicates.index).sum() / ocean_area 
         n_sst_q5 = 365.0 * Q5_duplicates.groupby(Q5_duplicates.index).sum() / ocean_area 
         df = DataFrame({'Q4' : n_sst_q4, 'Q5' : n_sst_q5}) 
-        df['Sum'] = df['Q4'].fillna(0) + df['Q5'].fillna(0)
+        df['Sum'] = df['Q4'] + df['Q5']
+#        df['Sum'] = df['Q4'].fillna(0) + df['Q5'].fillna(0)
 #        df['Sum_mean'] = df['Sum'].resample("1d").sum().fillna(0).rolling(window=31, min_periods=1).median()
-#        N += df['Sum_mean'].shape[0]
-        N += df['Sum'].shape[0]
         lab.append(labels[i])
 #        df['Sum_mean'].plot(ax=ax1)
-#        df['Sum'].plot(ax=ax1)
-        ax1.plot(times, df['Sum'], '-', markersize=0.2)
+        ax1.plot(times, df['Sum'], '.', markersize=0.2)
         ax1.set_ylim([0,18])
 
-        print(labels[i] + ":" + str(df['Sum'].mean()))
+        print(labels[i] + "," + str(df['Sum'].mean()) + "," + str(df['Sum'].shape[0]))
 
     plt.tick_params(labelsize=12)
     title_str = 'QL=4 & 5'
     ax1.set_title(title_str, fontsize=10)
 
-    N = 0
     lab = []
     ncolors = len(satellites)
     ax2.set_prop_cycle('color',[plt.cm.gnuplot2(j) for j in np.linspace(0, 1, ncolors)])
@@ -358,19 +363,15 @@ def plot_n_sst_timeseries(satellites):
         times_duplicates = pd.Series(t)
         times = times_duplicates.drop_duplicates()
         Q3_duplicates = pd.Series(ds['n_sst_q3'].values[idx], index=t)
-#        n_sst_q3 = Q3_duplicates.groupby(Q3_duplicates.index).sum() / ocean_area / years
         n_sst_q3 = 365.0 * Q3_duplicates.groupby(Q3_duplicates.index).sum() / ocean_area
         df = DataFrame({'Q3' : n_sst_q3})
 #        df['Q3_mean'] = df['Q3'].resample("1d").sum().rolling(window=31, min_periods=1).median()
-#        N += df['Q3_mean'].shape[0]
-        N += df['Q3'].shape[0]
         lab.append(labels[i])
 #        df['Q3_mean'].plot(ax=ax2)
-#        df['Q3'].plot(ax=ax2)
-        ax2.plot(times, df['Q3'], '-', markersize=0.2)
+        ax2.plot(times, df['Q3'], '.', markersize=0.2)
         ax2.set_ylim([0,18])
 
-        print(labels[i] + ":" + str(df['Q3'].mean()))
+        print(labels[i] + "," + str(df['Q3'].mean()) + "," + str(df['Q3'].shape[0]))
 
     plt.tick_params(labelsize=12)
     title_str = 'QL=3'
@@ -414,7 +415,6 @@ def calc_lat_fraction():
 def load_data(lat_vec, lat_fraction):
 
     ocean_area = 361900000.0
-#    satellites = ['AVHRR06_G','AVHRR07_G','AVHRR08_G','AVHRR09_G','AVHRR10_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
     satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
     df = []
     for i in range(0,len(satellites)):
