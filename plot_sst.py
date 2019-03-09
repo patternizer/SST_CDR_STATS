@@ -89,19 +89,32 @@ def plot_n_sst_lat(lat_vec,n_sst_q3_lat,n_sst_q4_lat,n_sst_q5_lat):
     # PLOT SST OBSERVATION DENSITY WITH LATITUDE
     # ------------------------------------------
     """     
-    Q3 = pd.Series(n_sst_q3_lat)
-    Q4 = pd.Series(n_sst_q4_lat)
-    Q5 = pd.Series(n_sst_q5_lat)
+
+    interpolation = np.arange(-90,90,1)
+    multiplier = 1.0
+    Q3 = multiplier * pd.Series(np.interp(interpolation,lat_vec,n_sst_q3_lat), index=interpolation)
+    Q4 = multiplier * pd.Series(np.interp(interpolation,lat_vec,n_sst_q4_lat), index=interpolation)
+    Q5 = multiplier * pd.Series(np.interp(interpolation,lat_vec,n_sst_q5_lat), index=interpolation)
+#    Q3 = pd.Series(n_sst_q3_lat)
+#    Q4 = pd.Series(n_sst_q4_lat)
+#    Q5 = pd.Series(n_sst_q5_lat)
     df = pd.DataFrame({'QL=3':Q3, 'QL=4':Q4, 'QL=5':Q5})
     df['QL=4 & 5'] = df['QL=4'] + df['QL=5']    
     df['QL=3 & 4 & 5'] = df['QL=3'] + df['QL=4'] + df['QL=5']    
-#    df = df.mask(np.isinf(df))
+    df = df.mask(np.isinf(df))
 
     fig = plt.figure()
+
 #    plt.fill_between(lat_vec, df['QL=4 & 5'],  step="mid", alpha=1.0, label='QL=4 & 5')
 #    plt.fill_between(lat_vec, df['QL=3'], step="mid", alpha=1.0, label='QL=3')
-    plt.plot(lat_vec, df['QL=4 & 5'], drawstyle='steps', label='QL=4 & 5')
-    plt.plot(lat_vec, df['QL=3'], drawstyle='steps', label='QL=3')
+#    plt.plot(lat_vec, df['QL=4 & 5'], drawstyle='steps', label='QL=4 & 5')
+#    plt.plot(lat_vec, df['QL=3'], drawstyle='steps', label='QL=3')
+
+    plt.fill_between(interpolation, df['QL=4 & 5'],  step="pre", alpha=0.4)
+    plt.fill_between(interpolation, df['QL=3'], step="pre", alpha=0.4)
+    plt.plot(interpolation, df['QL=4 & 5'], drawstyle='steps', label='QL=4 & 5')
+    plt.plot(interpolation, df['QL=3'], drawstyle='steps', label='QL=3')
+ 
     ax = plt.gca()    
     ax.set_xlim([-90,90])
     ticks = ax.get_xticks()
@@ -122,7 +135,7 @@ def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
 #    multiplier = 1.0
     interpolation = np.arange(260,320,1) # 10x original resolution
     multiplier = 10.0
-    Q3 = multiplier * pd.Series(np.interp(interpolation,sst_midpoints,sst_q3_hist), index=interpolation)
+    Q3 = multiplier * pd.Series(np.interp(interpolation,sst_midpoints,sst_q3_hist), index=interpolation) 
     Q4 = multiplier * pd.Series(np.interp(interpolation,sst_midpoints,sst_q4_hist), index=interpolation)
     Q5 = multiplier * pd.Series(np.interp(interpolation,sst_midpoints,sst_q5_hist), index=interpolation)
     df = pd.DataFrame({'QL=3':Q3, 'QL=4':Q4, 'QL=5':Q5})
@@ -164,7 +177,8 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
     # ------------------------------------------------
     """     
 #    interpolation = np.arange(0.005,1.995,0.01) # original resolution
-    interpolation = np.arange(0,2,0.01)
+    sensitivity_midpoints = np.arange(0.01,2.01,0.01)
+    interpolation = np.arange(0.01,2.01,0.01)
     multiplier = 1.0
     Q3 = multiplier * pd.Series(np.interp(interpolation,sensitivity_midpoints,sensitivity_q3_hist), index=interpolation)
     Q4 = multiplier * pd.Series(np.interp(interpolation,sensitivity_midpoints,sensitivity_q4_hist), index=interpolation)
@@ -172,7 +186,7 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
 
     df = pd.DataFrame({'QL=3':Q3, 'QL=4':Q4, 'QL=5':Q5})
     df['QL=4 & 5'] = 0.5 * (df['QL=4'] + df['QL=5'])
-    df = df.mask(np.isinf(df))
+#    df = df.mask(np.isinf(df))
    
     fig = plt.figure()
     plt.fill_between(100.0*interpolation,df['QL=4 & 5'], step="pre", alpha=0.4)
@@ -377,7 +391,7 @@ def plot_n_sst_timeseries(satellites):
     title_str = 'QL=3'
     ax2.set_title(title_str, fontsize=10)
 
-    fig.legend(lab, fontsize=8, loc=7)
+    fig.legend(lab, fontsize=8, loc=7, markerscale=20, scatterpoints=5)
     fig.subplots_adjust(right=0.8)  
     fig.text(0.01, 0.5, 'Observation density / $\mathrm{km^{-2} \ yr^{-1}}$', va='center', rotation='vertical')
     plt.savefig('n_sst_timeseries.png')
