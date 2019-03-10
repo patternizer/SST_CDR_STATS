@@ -133,6 +133,7 @@ def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
     """     
 #    interpolation = np.arange(260.05,319.95,0.1) # original resolution
 #    multiplier = 1.0
+#    sst_midpoints = np.arange(260,320,1)
     interpolation = np.arange(260,320,1) # 10x original resolution
     multiplier = 10.0
     Q3 = multiplier * pd.Series(np.interp(interpolation,sst_midpoints,sst_q3_hist), index=interpolation) 
@@ -140,7 +141,7 @@ def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
     Q5 = multiplier * pd.Series(np.interp(interpolation,sst_midpoints,sst_q5_hist), index=interpolation)
     df = pd.DataFrame({'QL=3':Q3, 'QL=4':Q4, 'QL=5':Q5})
     df['QL=4 & 5'] = 0.5 * (df['QL=4'] + df['QL=5'])   
-    df = df.mask(np.isinf(df))
+#    df = df.mask(np.isinf(df))
 
     fig = plt.figure()
     plt.fill_between(interpolation,df['QL=4 & 5'], step="pre", alpha=0.4)
@@ -201,7 +202,6 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
 
     M3 = calc_median(df['QL=3'],interpolation)
     M4_5 = calc_median(df['QL=4 & 5'],interpolation)
-
     Median3 = calc_median(sensitivity_q3_hist,sensitivity_midpoints)
     Median4_5 = calc_median(0.5*(sensitivity_q4_hist+sensitivity_q5_hist),sensitivity_midpoints)
     print("Retrieval Sensitivity: M3=" + str(M3))
@@ -211,6 +211,7 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
     print("Raw: M4_5=" + str(Median4_5))
     print("Sum: M4_5=" + str(df['QL=4 & 5'].sum()))
 
+#    title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
     title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
     plt.title(title_str, fontsize=10)
     plt.legend(loc='best')
@@ -223,7 +224,8 @@ def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertain
     # --------------------------------------------
     """     
 #    interpolation = np.arange(0.005,3.995+0.01,0.01) # original resolution
-    interpolation = np.arange(0,4,0.01)
+    total_uncertainty_midpoints =  np.arange(0.01,4.01,0.01)
+    interpolation = np.arange(0.01,4.01,0.01)
     multiplier = 1.0
     Q3 = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q3_hist), index=interpolation)
     Q4 = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q4_hist), index=interpolation)
@@ -268,14 +270,16 @@ def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertai
     # --------------------------------------------------------------
     """     
 #    interpolation = np.arange(0.005,3.995,0.01) # original resolution 
-    interpolation = np.arange(0,4,0.01)
+    total_uncertainty_midpoints = np.arange(0.01,4.01,0.01)
+    interpolation = np.arange(0.01,4.01,0.01)
     multiplier = 1.0
 
     Q3_avhrr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q3_hist_avhrr), index=interpolation)
     Q4_avhrr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q4_hist_avhrr), index=interpolation)
     Q5_avhrr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q5_hist_avhrr), index=interpolation)
     df_avhrr = pd.DataFrame({'QL=3':Q3_avhrr, 'QL=4':Q4_avhrr, 'QL=5':Q5_avhrr})
-    df_avhrr['QL=4 & 5'] = 0.5 * (df_avhrr['QL=4'] + df_avhrr['QL=5'])
+#    df_avhrr['QL=4 & 5'] = 0.5 * (df_avhrr['QL=4'] + df_avhrr['QL=5'])
+    df_avhrr['QL=4 & 5'] = df_avhrr['QL=5']
 #    df_avhrr = df_avhrr.mask(np.isinf(df_avhrr))
 
     Q3_atsr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q3_hist_atsr), index=interpolation)
