@@ -79,7 +79,10 @@ def plot_n_sst(times,n_sst_q3,n_sst_q4,n_sst_q5):
     plt.tick_params(labelsize=12)
     plt.ylabel("Observation density / $\mathrm{km^{-2} \ yr^{-1}}$", fontsize=12)
     title_str = ' ' + 'QL=3:max=' + "{0:.2f}".format(df['QL=3'].cumsum().max()) + ' ' + 'QL=4 & 5:max=' + "{0:.2f}".format(df['QL=4 & 5'].cumsum().max())
-    plt.title(title_str, fontsize=10)
+
+    print(title_str)
+
+#    plt.title(title_str, fontsize=10)
     plt.legend(loc='best')
     plt.savefig('n_sst.png')    
 
@@ -167,7 +170,7 @@ def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
     print("Sum: M4_5=" + str(df['QL=4 & 5'].sum()))
 
     title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
-    plt.title(title_str, fontsize=10)
+#    plt.title(title_str, fontsize=10)
     plt.legend(loc='best')
     plt.savefig('hist_sst.png')
     
@@ -213,7 +216,7 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
 
 #    title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
     title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
-    plt.title(title_str, fontsize=10)
+#    plt.title(title_str, fontsize=10)
     plt.legend(loc='best')
     plt.savefig('hist_sensitivity.png')
 
@@ -259,7 +262,10 @@ def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertain
     print("Sum: M4_5=" + str( df['QL=4 & 5'].sum() ))
 
     title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
-    plt.title(title_str, fontsize=10)
+
+    print(title_str)
+
+#    plt.title(title_str, fontsize=10)
     plt.legend(loc='best')
     plt.savefig('hist_total_uncertainty.png')
 
@@ -301,8 +307,11 @@ def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertai
     plt.ylabel("Frequency / $\mathrm{\% \ cK^{-1}}$", fontsize=12)
     M3 = calc_median(df_avhrr['QL=3'],interpolation)
     M4_5 = calc_median(df_avhrr['QL=4 & 5'],interpolation)
-    title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
-    plt.title(title_str, fontsize=10)
+    title_str = 'AVHRR: QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
+
+    print(title_str)
+
+#    plt.title(title_str, fontsize=10)
     plt.legend(loc='best')
     plt.savefig('hist_total_uncertainty_avhrr.png')
 
@@ -318,8 +327,11 @@ def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertai
     plt.ylabel("Frequency / $\mathrm{\% \ cK^{-1}}$", fontsize=12)
     M3 = calc_median(df_atsr['QL=3'],interpolation)
     M4_5 = calc_median(df_atsr['QL=4 & 5'],interpolation)
-    title_str = 'QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
-    plt.title(title_str, fontsize=10)
+    title_str = 'ATSR: QL=3:median=' + "{0:.2f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.2f}".format(M4_5)
+
+    print(title_str)
+
+#    plt.title(title_str, fontsize=10)
     plt.legend(loc='best')
     plt.savefig('hist_total_uncertainty_atsr.png')
 
