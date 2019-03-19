@@ -193,6 +193,10 @@ def run(instrument,year,month,day):
 
 # HISTOGRAMS
 
+    # NB:  np.histogram provides bin edges ranging from the lower bound of the first bin to the upper bound of the last bin
+    # i.e. N(bin edges) = N(bins) + 1
+    # Store bin midpoints (assuming equal width bins) for all histograms
+
     nbins = 600
     sst_min = 260
     sst_max = 320
