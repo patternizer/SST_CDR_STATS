@@ -3,7 +3,7 @@
 # PROGRAM: plot_sst.py
 # ----------------------------------------------------------------------------------
 # Version 0.11
-# 06 March, 2019
+# 22 March, 2019
 # michael.taylor AT reading DOT ac DOT uk
 
 # PYTHON DEBUGGER CONTROL:
@@ -11,6 +11,7 @@
 # import os; os._exit(0)
 # import ipdb
 # ipdb.set_trace()
+
 
 import os.path
 import optparse
