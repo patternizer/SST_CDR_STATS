@@ -2,8 +2,8 @@
 
 # PROGRAM: plot_sst.py
 # ----------------------------------------------------------------------------------
-# Version 0.12
-# 24 March, 2019
+# Version 0.13
+# 25 March, 2019
 # michael.taylor AT reading DOT ac DOT uk
 
 # PYTHON DEBUGGER CONTROL:
@@ -368,6 +368,67 @@ def plot_n_sst_timeseries(satellites):
     fig.text(0.01, 0.5, 'Observation density / $\mathrm{km^{-2} \ yr^{-1}}$', va='center', rotation='vertical')
     plt.savefig('n_sst_timeseries.png')
 
+def plot_n_sst_boxplots(satellites):
+    """
+    # --------------------------------------------------------------
+    # PLOT YEARLY BOXPLOTS FROM DAILY OBSERVATION DENSITY PER SENSOR
+    # --------------------------------------------------------------
+    """     
+    ocean_area = 361900000.0
+    labels = ['ATSR1','ATSR2','AATSR','NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA']
+    satellites = ['ATSR1','ATSR2','AATSR','AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
+
+    for i in range(0,len(satellites)):
+        filename = satellites[i] + '_summary.nc'
+        ds = xarray.open_dataset(filename)
+        dates = ds['time']
+        idx = np.argsort(dates, axis=0) 
+        t = np.array(dates)[idx]
+        days = (t[-1] - t[0]).astype('timedelta64[D]') / np.timedelta64(1, 'D')
+        years = days/365.0
+        times_duplicates = pd.Series(t)
+        times = times_duplicates.drop_duplicates()
+        Q4_duplicates = pd.Series(ds['n_sst_q4'].values[idx], index=t)
+        Q5_duplicates = pd.Series(ds['n_sst_q5'].values[idx], index=t)
+        n_sst_q4 = 365.0 * Q4_duplicates.groupby(Q4_duplicates.index).sum() / ocean_area 
+        n_sst_q5 = 365.0 * Q5_duplicates.groupby(Q5_duplicates.index).sum() / ocean_area 
+        df = DataFrame({'Q4' : n_sst_q4, 'Q5' : n_sst_q5}) 
+        df['Sum'] = df['Q4'] + df['Q5']
+        
+        fig, ax = plt.subplots(figsize=(12,5))        
+        ts = pd.Series(df['Sum'].values, index=times)
+        sns.boxplot(ts.index.month, ts, ax=ax)
+        title_str = 'QL=4 & 5:' + labels[i]
+        ax.set_ylabel('Observation density / $\mathrm{km^{-2} \ yr^{-1}}$')
+        ax.set_title(title_str, fontsize=10)
+        file_str = 'n_sst_boxplot_' + labels[i] + '_QL4_5' '.png'
+        plt.savefig(file_str)
+        plt.close("all")        
+
+    for i in range(0,len(satellites)):
+        filename = satellites[i] + '_summary.nc'
+        ds = xarray.open_dataset(filename)
+        dates = ds['time']
+        idx = np.argsort(dates, axis=0) 
+        t = np.array(dates)[idx]
+        days = (t[-1] - t[0]).astype('timedelta64[D]') / np.timedelta64(1, 'D')
+        years = days/365.0
+        times_duplicates = pd.Series(t)
+        times = times_duplicates.drop_duplicates()
+        Q3_duplicates = pd.Series(ds['n_sst_q3'].values[idx], index=t)
+        n_sst_q3 = 365.0 * Q3_duplicates.groupby(Q3_duplicates.index).sum() / ocean_area
+        df = DataFrame({'Q3' : n_sst_q3})
+
+        fig, ax = plt.subplots(figsize=(12,5))
+        ts = pd.Series(df['Q3'].values, index=times)
+        sns.boxplot(ts.index.month, ts, ax=ax)
+        title_str = 'QL=3:' + labels[i]
+        ax.set_ylabel('Observation density / $\mathrm{km^{-2} \ yr^{-1}}$')
+        ax.set_title(title_str, fontsize=10)
+        file_str = 'n_sst_boxplot_' + labels[i] + '_QL3' '.png'
+        plt.savefig(file_str)
+        plt.close("all")        
+
 def calc_lat_fraction():
     """
     # ---------------------------------------------------------------
@@ -486,6 +547,7 @@ def load_data(lat_vec, lat_fraction):
 
     plot_n_sst(times,n_sst_q3,n_sst_q4,n_sst_q5)
     plot_n_sst_timeseries(satellites)
+    plot_n_sst_boxplots(satellites)
     plot_n_sst_lat(lat_vec,n_sst_q3_lat,n_sst_q4_lat,n_sst_q5_lat)
  
 if __name__ == "__main__":
