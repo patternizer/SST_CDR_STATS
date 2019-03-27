@@ -2,8 +2,8 @@
 
 # PROGRAM: plot_sst.py
 # ----------------------------------------------------------------------------------
-# Version 0.13
-# 25 March, 2019
+# Version 0.14
+# 27 March, 2019
 # michael.taylor AT reading DOT ac DOT uk
 
 # PYTHON DEBUGGER CONTROL:
@@ -291,6 +291,39 @@ def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertai
     plt.legend(loc='best')
     plt.savefig('hist_total_uncertainty_atsr.png')
 
+def calc_n_sst_timeseries(satellites):
+    """
+    # ---------------------------------------------------------------
+    # CALC MEAN OF TIMESERIES OF DAILY OBSERVATION DENSITY PER SENSOR
+    # ---------------------------------------------------------------
+    """     
+    ocean_area = 361900000.0
+    labels = ['ATSR1','ATSR2','AATSR','NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA']
+    satellites = ['ATSR1','ATSR2','AATSR','AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
+
+    df2 = []
+    for i in range(0,len(satellites)):
+        filename = satellites[i] + '_summary.nc'
+        ds = xarray.open_dataset(filename)
+        dates = ds['time']
+        idx = np.argsort(dates, axis=0) 
+        t = np.array(dates)[idx]
+        days = (t[-1] - t[0]).astype('timedelta64[D]') / np.timedelta64(1, 'D')
+        years = days/365.0
+        times_duplicates = pd.Series(t)
+        times = times_duplicates.drop_duplicates()
+        Q3_duplicates = pd.Series(ds['n_sst_q3'].values[idx], index=t)
+        Q4_duplicates = pd.Series(ds['n_sst_q4'].values[idx], index=t)
+        Q5_duplicates = pd.Series(ds['n_sst_q5'].values[idx], index=t)
+        n_sst_q3 = 365.0 * Q3_duplicates.groupby(Q3_duplicates.index).sum() / ocean_area 
+        n_sst_q4 = 365.0 * Q4_duplicates.groupby(Q4_duplicates.index).sum() / ocean_area 
+        n_sst_q5 = 365.0 * Q5_duplicates.groupby(Q5_duplicates.index).sum() / ocean_area 
+        df = DataFrame({'Q3' : n_sst_q3, 'Q4' : n_sst_q4, 'Q5' : n_sst_q5}) 
+        df['Sum'] = df['Q4'] + df['Q5']
+        df2.append(df)
+
+    return df2
+
 def plot_n_sst_timeseries(satellites):
     """
     # -------------------------------------------------------
@@ -324,11 +357,11 @@ def plot_n_sst_timeseries(satellites):
         df['Sum'] = df['Q4'] + df['Q5']
 #        df['Sum'] = df['Q4'].fillna(0) + df['Q5'].fillna(0)
 #        df['Sum_mean'] = df['Sum'].resample("1d").sum().fillna(0).rolling(window=31, min_periods=1).median()
-        lab.append(labels[i])
 #        df['Sum_mean'].plot(ax=ax1)
+
+        lab.append(labels[i])
         ax1.plot(times, df['Sum'], '.', markersize=0.2)
         ax1.set_ylim([0,18])
-
         print(labels[i] + "," + str(df['Sum'].mean()) + "," + str(df['Sum'].shape[0]))
 
     plt.tick_params(labelsize=12)
@@ -352,11 +385,11 @@ def plot_n_sst_timeseries(satellites):
         n_sst_q3 = 365.0 * Q3_duplicates.groupby(Q3_duplicates.index).sum() / ocean_area
         df = DataFrame({'Q3' : n_sst_q3})
 #        df['Q3_mean'] = df['Q3'].resample("1d").sum().rolling(window=31, min_periods=1).median()
-        lab.append(labels[i])
 #        df['Q3_mean'].plot(ax=ax2)
+
+        lab.append(labels[i])
         ax2.plot(times, df['Q3'], '.', markersize=0.2)
         ax2.set_ylim([0,18])
-
         print(labels[i] + "," + str(df['Q3'].mean()) + "," + str(df['Q3'].shape[0]))
 
     plt.tick_params(labelsize=12)
@@ -449,12 +482,6 @@ def calc_lat_fraction():
     lat_vec = y
     lat_fraction = f
 
-#    dlat = 0.05
-#    lat_vec = np.arange(-90,90,dlat)+0.025
-#    lat_fraction = np.zeros(len(lat_vec))
-#    for i in range(len(lat_vec)):     
-#        lat_fraction[i]=f.values[i] 
-
 #    exec(open('plot_landsea_mask.py').read())
 
     return lat_vec, lat_fraction
@@ -539,12 +566,11 @@ def load_data(lat_vec, lat_fraction):
     total_uncertainty_q4_hist_atsr = 100.0 * np.sum(ds_atsr['total_uncertainty_q4_hist'],axis=0) / np.sum(np.sum(ds_atsr['total_uncertainty_q4_hist'],axis=0))
     total_uncertainty_q5_hist_atsr = 100.0 * np.sum(ds_atsr['total_uncertainty_q5_hist'],axis=0) / np.sum(np.sum(ds_atsr['total_uncertainty_q5_hist'],axis=0))
 
+    calc_n_sst_timeseries(satellites)
     plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist)
     plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensitivity_q4_hist,sensitivity_q5_hist)
     plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertainty_q3_hist,total_uncertainty_q4_hist,total_uncertainty_q5_hist)
-
     plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertainty_q3_hist_avhrr,total_uncertainty_q4_hist_avhrr,total_uncertainty_q5_hist_avhrr,total_uncertainty_q3_hist_atsr,total_uncertainty_q4_hist_atsr,total_uncertainty_q5_hist_atsr)
-
     plot_n_sst(times,n_sst_q3,n_sst_q4,n_sst_q5)
     plot_n_sst_timeseries(satellites)
     plot_n_sst_boxplots(satellites)
