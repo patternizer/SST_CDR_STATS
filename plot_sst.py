@@ -522,11 +522,18 @@ def calc_lat_fraction():
     x = ds.lon
     y = ds.lat
     z = ds.mask     
+    water = z==1   
     land = z==2   
-    f = 1 - (np.sum(land[0,:,:],axis=1) / len(x)*1.)
+    water_ice = z==9   
+
+    # water only = 52.42%
+    # land only = 33.67%
+    # water + ice = 13.91%
+
+    f = 1 - (np.sum(land[0,:,:],axis=1) / len(x)*1.)    
     lat_vec = y
     lat_fraction = f
-
+    
 #    exec(open('plot_landsea_mask.py').read())
 
     return lat_vec, lat_fraction
@@ -571,11 +578,23 @@ def load_data(lat_vec, lat_fraction):
     n_sst_q3_lat = np.sum(ds['n_sst_q3_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
     n_sst_q4_lat = np.sum(ds['n_sst_q4_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
     n_sst_q5_lat = np.sum(ds['n_sst_q5_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
-
+    
     sst_midpoints = ds['sst_midpoints']
     sst_q3_hist = 100.0 * np.sum(ds['sst_q3_hist'],axis=0) / np.sum(np.sum(ds['sst_q3_hist'],axis=0))
     sst_q4_hist = 100.0 * np.sum(ds['sst_q4_hist'],axis=0) / np.sum(np.sum(ds['sst_q4_hist'],axis=0))
     sst_q5_hist = 100.0 * np.sum(ds['sst_q5_hist'],axis=0) / np.sum(np.sum(ds['sst_q5_hist'],axis=0))
+
+    # water only = 52.42%
+    # land only = 33.67%
+    # water + ice = 13.91%
+    # non-land = 66.33%
+    n_ocean = (0.5242 + 0.1391) * 3600 * 7200 * len(t)
+    n_q3 = np.sum(n_sst_q3)
+    n_q4 = np.sum(n_sst_q4)
+    n_q5 = np.sum(n_sst_q5)
+    clearsky_q3 = n_q3 / n_ocean
+    clearsky_q4 = n_q4 / n_ocean
+    clearsky_q5 = n_q5 / n_ocean
 
     sensitivity_midpoints = ds['sensitivity_midpoints']
     sensitivity_q3_hist = 100.0 * np.sum(ds['sensitivity_q3_hist'],axis=0) / np.sum(np.sum(ds['sensitivity_q3_hist'],axis=0)) 
