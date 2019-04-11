@@ -2,8 +2,8 @@
 
 # PROGRAM: plot_sst.py
 # ----------------------------------------------------------------------------------
-# Version 0.14
-# 27 March, 2019
+# Version 0.15
+# 11 April, 2019
 # michael.taylor AT reading DOT ac DOT uk
 
 # PYTHON DEBUGGER CONTROL:
@@ -11,7 +11,6 @@
 # import os; os._exit(0)
 # import ipdb
 # ipdb.set_trace()
-
 
 import os.path
 import optparse
@@ -44,6 +43,7 @@ def calc_median(counts,bins):
     # f_m = frequency of the median bar
     # c = median bar width
     """
+
     M = 0
     counts_cumsum = counts.cumsum()
     counts_half = counts_cumsum[-1]/2.0    
@@ -64,6 +64,7 @@ def plot_n_sst(times,n_sst_q3,n_sst_q4,n_sst_q5):
     # PLOT CUMULATIVE SST OBSERVATION DENSITY
     # ---------------------------------------
     """    
+
     ocean_area = 361900000.0
     t = np.array(times, dtype=np.datetime64)
     years = (t[-1] - t[0]).astype('timedelta64[D]') / np.timedelta64(1, 'D') / 365.0
@@ -123,6 +124,7 @@ def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
     # PLOT HISTOGRAM OF SST + MEDIAN
     # ------------------------------
     """     
+
 #    interpolation = np.arange(260.05,319.95,0.1) # original bin midpoints    
     i = np.arange(260,320,0.1) # bin edges
     n = len(i)
@@ -168,6 +170,7 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
     # PLOT HISTOGRAM OF RETRIEVAL SENSITIVITY + MEDIAN
     # ------------------------------------------------
     """     
+
 #    interpolation = np.arange(0.005,1.995,0.01) # original bin midpoints
     interpolation = np.arange(0,2,0.01)
     n = len(interpolation)
@@ -203,6 +206,7 @@ def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertain
     # PLOT HISTOGRAM OF TOTAL UNCERTAINTY + MEDIAN
     # --------------------------------------------
     """     
+
 #    interpolation = np.arange(0.005,3.995+0.01,0.01) # original bin midpoints
     interpolation = np.arange(0,4,0.01)
     n = len(interpolation)
@@ -238,6 +242,7 @@ def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertai
     # PLOT HISTOGRAM OF TOTAL UNCERTAINTY + MEDIAN FOR AVHRR VS ATSR
     # --------------------------------------------------------------
     """     
+
 #    interpolation = np.arange(0.005,3.995,0.01) # original bin midpoints
     interpolation = np.arange(0,4,0.01)
     n = len(interpolation)
@@ -247,7 +252,6 @@ def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertai
     Q4_avhrr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q4_hist_avhrr), index=interpolation)
     Q5_avhrr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q5_hist_avhrr), index=interpolation)
     df_avhrr = pd.DataFrame({'QL=3':Q3_avhrr, 'QL=4':Q4_avhrr, 'QL=5':Q5_avhrr})
-#    df_avhrr['QL=4 & 5'] = 0.5 * (df_avhrr['QL=4'] + df_avhrr['QL=5'])
     df_avhrr['QL=4 & 5'] = df_avhrr['QL=5']
 #    df_avhrr = df_avhrr.mask(np.isinf(df_avhrr))
 
@@ -298,12 +302,14 @@ def calc_n_sst_timeseries(satellites):
     # CALC MEAN OF TIMESERIES OF DAILY OBSERVATION DENSITY PER SENSOR
     # ---------------------------------------------------------------
     """     
+
     ocean_area = 361900000.0
     labels = ['ATSR1','ATSR2','AATSR','NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA']
 
     satellites = ['ATSR1','ATSR2','AATSR','AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
     df_all = pd.DataFrame()
     for i in range(0,len(satellites)):
+
         filename = satellites[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
         dates = ds['time']
@@ -326,6 +332,7 @@ def calc_n_sst_timeseries(satellites):
     satellites_avhrr = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
     df_avhrr = pd.DataFrame()
     for i in range(0,len(satellites_avhrr)):
+
         filename = satellites_avhrr[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
         dates = ds['time']
@@ -348,6 +355,7 @@ def calc_n_sst_timeseries(satellites):
     satellites_atsr = ['AATSR','ATSR1','ATSR2']
     df_atsr = pd.DataFrame()
     for i in range(0,len(satellites_atsr)):
+
         filename = satellites_atsr[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
         dates = ds['time']
@@ -375,6 +383,7 @@ def plot_n_sst_timeseries(satellites):
     # PLOT TIMESERIES OF DAILY OBSERVATION DENSITY PER SENSOR
     # -------------------------------------------------------
     """     
+
     ocean_area = 361900000.0
     labels = ['ATSR1','ATSR2','AATSR','NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA']
     satellites = ['ATSR1','ATSR2','AATSR','AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
@@ -385,6 +394,7 @@ def plot_n_sst_timeseries(satellites):
     ncolors = len(satellites)
     ax1.set_prop_cycle('color',[plt.cm.gnuplot2(j) for j in np.linspace(0, 1, ncolors)])
     for i in range(0,len(satellites)):
+
         filename = satellites[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
         dates = ds['time']
@@ -417,6 +427,7 @@ def plot_n_sst_timeseries(satellites):
     ncolors = len(satellites)
     ax2.set_prop_cycle('color',[plt.cm.gnuplot2(j) for j in np.linspace(0, 1, ncolors)])
     for i in range(0,len(satellites)):
+
         filename = satellites[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
         dates = ds['time']
@@ -452,11 +463,13 @@ def plot_n_sst_boxplots(satellites):
     # PLOT YEARLY BOXPLOTS FROM DAILY OBSERVATION DENSITY PER SENSOR
     # --------------------------------------------------------------
     """     
+
     ocean_area = 361900000.0
     labels = ['ATSR1','ATSR2','AATSR','NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA']
     satellites = ['ATSR1','ATSR2','AATSR','AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
 
     for i in range(0,len(satellites)):
+
         filename = satellites[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
         dates = ds['time']
@@ -484,6 +497,7 @@ def plot_n_sst_boxplots(satellites):
         plt.close("all")        
 
     for i in range(0,len(satellites)):
+
         filename = satellites[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
         dates = ds['time']
@@ -513,6 +527,7 @@ def calc_lat_fraction():
     # EXTRACT OCEAN FRACTION WITH LATITUDE FROM L4 OSTIA LANDSEA MASK
     # ---------------------------------------------------------------
     """     
+
     # mask:source = "NAVOCEANO_landmask_v1.0 EUMETSAT_OSI-SAF_icemask ARCLake_lakemask"
     # mask:comment = "water land lake ice"
     # mask:flag_masks = 1b, 2b, 4b, 8b, 16b 
@@ -539,6 +554,11 @@ def calc_lat_fraction():
     return lat_vec, lat_fraction
 
 def load_data(lat_vec, lat_fraction):
+    """
+    # --------------------------------------------------------------------------------------
+    # MAIN ROUTINE TO LOAD DATA INTO XARRAY AND PANDAS DATAFRAMES AND CALL PLOTTING ROUTINES
+    # --------------------------------------------------------------------------------------
+    """     
 
     ocean_area = 361900000.0
     satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
@@ -574,27 +594,35 @@ def load_data(lat_vec, lat_fraction):
     Q4_duplicates = []
     Q5_duplicates = []
 
-#    lat_vec = ds['lat_vec']
-    n_sst_q3_lat = np.sum(ds['n_sst_q3_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
-    n_sst_q4_lat = np.sum(ds['n_sst_q4_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
-    n_sst_q5_lat = np.sum(ds['n_sst_q5_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
-    
-    sst_midpoints = ds['sst_midpoints']
-    sst_q3_hist = 100.0 * np.sum(ds['sst_q3_hist'],axis=0) / np.sum(np.sum(ds['sst_q3_hist'],axis=0))
-    sst_q4_hist = 100.0 * np.sum(ds['sst_q4_hist'],axis=0) / np.sum(np.sum(ds['sst_q4_hist'],axis=0))
-    sst_q5_hist = 100.0 * np.sum(ds['sst_q5_hist'],axis=0) / np.sum(np.sum(ds['sst_q5_hist'],axis=0))
+    #
+    # CALCULATE CLEAR SKY FRACTION
+    # 
 
-    # water only = 52.42%
-    # land only = 33.67%
-    # water + ice = 13.91%
-    # non-land = 66.33%
-    n_ocean = (0.5242 + 0.1391) * 3600 * 7200 * len(t)
+    # water only = 52.42% / land only = 33.67% / water + ice = 13.91% / non-land = 66.33%
+    n_ocean = (0.5242 + 0.1391) * 3600 * 7200 * len(times)
     n_q3 = np.sum(n_sst_q3)
     n_q4 = np.sum(n_sst_q4)
     n_q5 = np.sum(n_sst_q5)
     clearsky_q3 = n_q3 / n_ocean
     clearsky_q4 = n_q4 / n_ocean
     clearsky_q5 = n_q5 / n_ocean
+
+    #
+    # SLICE BY LATITUDE
+    #
+
+    n_sst_q3_lat = np.sum(ds['n_sst_q3_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
+    n_sst_q4_lat = np.sum(ds['n_sst_q4_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
+    n_sst_q5_lat = np.sum(ds['n_sst_q5_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
+
+    #
+    # CONCATENATE HISTOGRAMS
+    #
+    
+    sst_midpoints = ds['sst_midpoints']
+    sst_q3_hist = 100.0 * np.sum(ds['sst_q3_hist'],axis=0) / np.sum(np.sum(ds['sst_q3_hist'],axis=0))
+    sst_q4_hist = 100.0 * np.sum(ds['sst_q4_hist'],axis=0) / np.sum(np.sum(ds['sst_q4_hist'],axis=0))
+    sst_q5_hist = 100.0 * np.sum(ds['sst_q5_hist'],axis=0) / np.sum(np.sum(ds['sst_q5_hist'],axis=0))
 
     sensitivity_midpoints = ds['sensitivity_midpoints']
     sensitivity_q3_hist = 100.0 * np.sum(ds['sensitivity_q3_hist'],axis=0) / np.sum(np.sum(ds['sensitivity_q3_hist'],axis=0)) 
@@ -605,6 +633,8 @@ def load_data(lat_vec, lat_fraction):
     total_uncertainty_q3_hist = 100.0 * np.sum(ds['total_uncertainty_q3_hist'],axis=0) / np.sum(np.sum(ds['total_uncertainty_q3_hist'],axis=0))
     total_uncertainty_q4_hist = 100.0 * np.sum(ds['total_uncertainty_q4_hist'],axis=0) / np.sum(np.sum(ds['total_uncertainty_q4_hist'],axis=0))
     total_uncertainty_q5_hist = 100.0 * np.sum(ds['total_uncertainty_q5_hist'],axis=0) / np.sum(np.sum(ds['total_uncertainty_q5_hist'],axis=0))
+
+    # TOTAL UNCERTAINTY FOR AVHRR AND ATSR SEPARATELY
     
     satellites_avhrr = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
     df = []
@@ -629,6 +659,10 @@ def load_data(lat_vec, lat_fraction):
     total_uncertainty_q3_hist_atsr = 100.0 * np.sum(ds_atsr['total_uncertainty_q3_hist'],axis=0) / np.sum(np.sum(ds_atsr['total_uncertainty_q3_hist'],axis=0))
     total_uncertainty_q4_hist_atsr = 100.0 * np.sum(ds_atsr['total_uncertainty_q4_hist'],axis=0) / np.sum(np.sum(ds_atsr['total_uncertainty_q4_hist'],axis=0))
     total_uncertainty_q5_hist_atsr = 100.0 * np.sum(ds_atsr['total_uncertainty_q5_hist'],axis=0) / np.sum(np.sum(ds_atsr['total_uncertainty_q5_hist'],axis=0))
+
+    #
+    # CALL PLOTTING ROUTINES
+    #
 
     plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist)
     plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensitivity_q4_hist,sensitivity_q5_hist)
