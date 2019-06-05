@@ -2,8 +2,8 @@
 
 # PROGRAM: plot_sst.py
 # ----------------------------------------------------------------------------------
-# Version 0.15
-# 11 April, 2019
+# Version 0.16
+# 6 June, 2019
 # michael.taylor AT reading DOT ac DOT uk
 
 # PYTHON DEBUGGER CONTROL:
@@ -43,7 +43,6 @@ def calc_median(counts,bins):
     # f_m = frequency of the median bar
     # c = median bar width
     """
-
     M = 0
     counts_cumsum = counts.cumsum()
     counts_half = counts_cumsum[-1]/2.0    
@@ -64,7 +63,6 @@ def plot_n_sst(times,n_sst_q3,n_sst_q4,n_sst_q5):
     # PLOT CUMULATIVE SST OBSERVATION DENSITY
     # ---------------------------------------
     """    
-
     ocean_area = 361900000.0
     t = np.array(times, dtype=np.datetime64)
     years = (t[-1] - t[0]).astype('timedelta64[D]') / np.timedelta64(1, 'D') / 365.0
@@ -124,7 +122,6 @@ def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
     # PLOT HISTOGRAM OF SST + MEDIAN
     # ------------------------------
     """     
-
 #    interpolation = np.arange(260.05,319.95,0.1) # original bin midpoints    
     i = np.arange(260,320,0.1) # bin edges
     n = len(i)
@@ -170,7 +167,6 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
     # PLOT HISTOGRAM OF RETRIEVAL SENSITIVITY + MEDIAN
     # ------------------------------------------------
     """     
-
 #    interpolation = np.arange(0.005,1.995,0.01) # original bin midpoints
     interpolation = np.arange(0,2,0.01)
     n = len(interpolation)
@@ -206,7 +202,6 @@ def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertain
     # PLOT HISTOGRAM OF TOTAL UNCERTAINTY + MEDIAN
     # --------------------------------------------
     """     
-
 #    interpolation = np.arange(0.005,3.995+0.01,0.01) # original bin midpoints
     interpolation = np.arange(0,4,0.01)
     n = len(interpolation)
@@ -242,7 +237,6 @@ def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertai
     # PLOT HISTOGRAM OF TOTAL UNCERTAINTY + MEDIAN FOR AVHRR VS ATSR
     # --------------------------------------------------------------
     """     
-
 #    interpolation = np.arange(0.005,3.995,0.01) # original bin midpoints
     interpolation = np.arange(0,4,0.01)
     n = len(interpolation)
@@ -252,6 +246,7 @@ def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertai
     Q4_avhrr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q4_hist_avhrr), index=interpolation)
     Q5_avhrr = multiplier * pd.Series(np.interp(interpolation,total_uncertainty_midpoints,total_uncertainty_q5_hist_avhrr), index=interpolation)
     df_avhrr = pd.DataFrame({'QL=3':Q3_avhrr, 'QL=4':Q4_avhrr, 'QL=5':Q5_avhrr})
+#    df_avhrr['QL=4 & 5'] = 0.5 * (df_avhrr['QL=4'] + df_avhrr['QL=5'])
     df_avhrr['QL=4 & 5'] = df_avhrr['QL=5']
 #    df_avhrr = df_avhrr.mask(np.isinf(df_avhrr))
 
@@ -302,14 +297,12 @@ def calc_n_sst_timeseries(satellites):
     # CALC MEAN OF TIMESERIES OF DAILY OBSERVATION DENSITY PER SENSOR
     # ---------------------------------------------------------------
     """     
-
     ocean_area = 361900000.0
     labels = ['ATSR1','ATSR2','AATSR','NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA']
 
     satellites = ['ATSR1','ATSR2','AATSR','AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
     df_all = pd.DataFrame()
     for i in range(0,len(satellites)):
-
         filename = satellites[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
         dates = ds['time']
@@ -332,7 +325,6 @@ def calc_n_sst_timeseries(satellites):
     satellites_avhrr = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
     df_avhrr = pd.DataFrame()
     for i in range(0,len(satellites_avhrr)):
-
         filename = satellites_avhrr[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
         dates = ds['time']
@@ -355,7 +347,6 @@ def calc_n_sst_timeseries(satellites):
     satellites_atsr = ['AATSR','ATSR1','ATSR2']
     df_atsr = pd.DataFrame()
     for i in range(0,len(satellites_atsr)):
-
         filename = satellites_atsr[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
         dates = ds['time']
@@ -383,7 +374,6 @@ def plot_n_sst_timeseries(satellites):
     # PLOT TIMESERIES OF DAILY OBSERVATION DENSITY PER SENSOR
     # -------------------------------------------------------
     """     
-
     ocean_area = 361900000.0
     labels = ['ATSR1','ATSR2','AATSR','NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA']
     satellites = ['ATSR1','ATSR2','AATSR','AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
@@ -394,7 +384,6 @@ def plot_n_sst_timeseries(satellites):
     ncolors = len(satellites)
     ax1.set_prop_cycle('color',[plt.cm.gnuplot2(j) for j in np.linspace(0, 1, ncolors)])
     for i in range(0,len(satellites)):
-
         filename = satellites[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
         dates = ds['time']
@@ -427,7 +416,6 @@ def plot_n_sst_timeseries(satellites):
     ncolors = len(satellites)
     ax2.set_prop_cycle('color',[plt.cm.gnuplot2(j) for j in np.linspace(0, 1, ncolors)])
     for i in range(0,len(satellites)):
-
         filename = satellites[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
         dates = ds['time']
@@ -463,13 +451,11 @@ def plot_n_sst_boxplots(satellites):
     # PLOT YEARLY BOXPLOTS FROM DAILY OBSERVATION DENSITY PER SENSOR
     # --------------------------------------------------------------
     """     
-
     ocean_area = 361900000.0
     labels = ['ATSR1','ATSR2','AATSR','NOAA07','NOAA09','NOAA11','NOAA12','NOAA14','NOAA15','NOAA16','NOAA17','NOAA18','NOAA19','METOPA']
     satellites = ['ATSR1','ATSR2','AATSR','AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
 
     for i in range(0,len(satellites)):
-
         filename = satellites[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
         dates = ds['time']
@@ -497,7 +483,6 @@ def plot_n_sst_boxplots(satellites):
         plt.close("all")        
 
     for i in range(0,len(satellites)):
-
         filename = satellites[i] + '_summary.nc'
         ds = xarray.open_dataset(filename)
         dates = ds['time']
@@ -527,7 +512,6 @@ def calc_lat_fraction():
     # EXTRACT OCEAN FRACTION WITH LATITUDE FROM L4 OSTIA LANDSEA MASK
     # ---------------------------------------------------------------
     """     
-
     # mask:source = "NAVOCEANO_landmask_v1.0 EUMETSAT_OSI-SAF_icemask ARCLake_lakemask"
     # mask:comment = "water land lake ice"
     # mask:flag_masks = 1b, 2b, 4b, 8b, 16b 
@@ -554,13 +538,44 @@ def calc_lat_fraction():
     return lat_vec, lat_fraction
 
 def load_data(lat_vec, lat_fraction):
-    """
-    # --------------------------------------------------------------------------------------
-    # MAIN ROUTINE TO LOAD DATA INTO XARRAY AND PANDAS DATAFRAMES AND CALL PLOTTING ROUTINES
-    # --------------------------------------------------------------------------------------
-    """     
 
-    ocean_area = 361900000.0
+    #
+    # Rescale ocean_area to total area of surface in each latitude zone
+    #
+
+    ocean_area = 361900000.0 # ETOPO1: km2
+    R = 6371.0088 # km 
+
+    # Formula for the area of the Earth between a line of latitude and the north pole (the area of a spherical cap): A = 2*pi*R*h where R is the radius of the earth and h is the perpendicular distance from the plane containing the line of latitude to the pole. We can calculate h using trigonometry: h = R*(1-sin(lat)). The area north of a line of latitude is therefore: A = 2*pi*R^2(1-sin(lat)).
+
+    # The area between two lines of latitude is the difference between the area north of one latitude and the area north of the other latitude: A = |2*pi*R^2(1-sin(lat2)) - 2*pi*R^2(1-sin(lat1)) = 2*pi*R^2 |sin(lat1) - sin(lat2)
+
+    # The area of a lat-long rectangle is proportional to the difference in the longitudes. The area I just calculated is the area between longitude lines differing by 360 degrees. Therefore the area we seek is: A = 2*pi*R^2 |sin(lat1)-sin(lat2)| |lon1-lon2|/360 = (pi/180)R^2 |sin(lat1)-sin(lat2)| |lon1-lon2|
+
+    dlat = 0.05
+    A = []
+    N = len(lat_vec)
+    for i in range(N):
+        dA = 2. * np.pi * R**2.0 * np.absolute( np.sin(np.pi/180 * (lat_vec[\
+i]+dlat/2)) - np.sin(np.pi/180 * (lat_vec[i]-dlat/2)))
+        A.append(dA)
+    surface_vec = np.array(A)
+    ocean_vec = surface_vec * np.array(lat_fraction)
+
+    fig, ax = plt.subplots()
+    plt.plot(lat_vec, surface_vec, label='surface area')
+    plt.plot(lat_vec, ocean_vec, label='ocean')
+    plt.legend()
+    plt.xlabel('Latitude / degrees')
+    plt.ylabel(r'Area / $km^{2}$')
+    title_str = "ETOPO1 ocean_area=" + "{0:.3e}".format(ocean_area) + " calculated=" + "{0:.3e}".format(np.sum(ocean_vec))
+    file_str = "ocean_area.png"
+    plt.title(title_str)
+    fig.tight_layout()
+    plt.savefig(file_str)
+
+    FPE = 100. * (1.0 - np.sum(ocean_vec) / ocean_area)
+
     satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
     df = []
     for i in range(0,len(satellites)):
@@ -596,7 +611,7 @@ def load_data(lat_vec, lat_fraction):
 
     #
     # CALCULATE CLEAR SKY FRACTION
-    # 
+    #
 
     # water only = 52.42% / land only = 33.67% / water + ice = 13.91% / non-land = 66.33%
     n_ocean = (0.5242 + 0.1391) * 3600 * 7200 * len(times)
@@ -611,14 +626,17 @@ def load_data(lat_vec, lat_fraction):
     # SLICE BY LATITUDE
     #
 
-    n_sst_q3_lat = np.sum(ds['n_sst_q3_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
-    n_sst_q4_lat = np.sum(ds['n_sst_q4_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
-    n_sst_q5_lat = np.sum(ds['n_sst_q5_lat'],axis=0)[0:3600,] / np.array((lat_fraction * ocean_area) / years)
+    # NB: change: * years rather than / years
+
+#    lat_vec = ds['lat_vec']
+    n_sst_q3_lat = np.sum(ds['n_sst_q3_lat'],axis=0)[0:3600,] / np.array((lat_fraction * surface_vec) * years)
+    n_sst_q4_lat = np.sum(ds['n_sst_q4_lat'],axis=0)[0:3600,] / np.array((lat_fraction * surface_vec) * years)
+    n_sst_q5_lat = np.sum(ds['n_sst_q5_lat'],axis=0)[0:3600,] / np.array((lat_fraction * surface_vec) * years)
 
     #
     # CONCATENATE HISTOGRAMS
     #
-    
+
     sst_midpoints = ds['sst_midpoints']
     sst_q3_hist = 100.0 * np.sum(ds['sst_q3_hist'],axis=0) / np.sum(np.sum(ds['sst_q3_hist'],axis=0))
     sst_q4_hist = 100.0 * np.sum(ds['sst_q4_hist'],axis=0) / np.sum(np.sum(ds['sst_q4_hist'],axis=0))
@@ -634,7 +652,9 @@ def load_data(lat_vec, lat_fraction):
     total_uncertainty_q4_hist = 100.0 * np.sum(ds['total_uncertainty_q4_hist'],axis=0) / np.sum(np.sum(ds['total_uncertainty_q4_hist'],axis=0))
     total_uncertainty_q5_hist = 100.0 * np.sum(ds['total_uncertainty_q5_hist'],axis=0) / np.sum(np.sum(ds['total_uncertainty_q5_hist'],axis=0))
 
+    #
     # TOTAL UNCERTAINTY FOR AVHRR AND ATSR SEPARATELY
+    #
     
     satellites_avhrr = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G']
     df = []
