@@ -2,7 +2,7 @@
 
 # PROGRAM: plot_sst.py
 # ----------------------------------------------------------------------------------
-# Version 0.16
+# Version 0.17
 # 6 June, 2019
 # michael.taylor AT reading DOT ac DOT uk
 
@@ -561,7 +561,9 @@ i]+dlat/2)) - np.sin(np.pi/180 * (lat_vec[i]-dlat/2)))
         A.append(dA)
     surface_vec = np.array(A)
     ocean_vec = surface_vec * np.array(lat_fraction)
-
+    FPE = 100. * (1.0 - np.sum(ocean_vec) / ocean_area)
+    print('FPE(ETOPO1,ocean_area)=', FPE)
+    
     fig, ax = plt.subplots()
     plt.plot(lat_vec, surface_vec, label='surface area')
     plt.plot(lat_vec, ocean_vec, label='ocean')
@@ -574,7 +576,6 @@ i]+dlat/2)) - np.sin(np.pi/180 * (lat_vec[i]-dlat/2)))
     fig.tight_layout()
     plt.savefig(file_str)
 
-    FPE = 100. * (1.0 - np.sum(ocean_vec) / ocean_area)
 
     satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
     df = []
@@ -628,10 +629,19 @@ i]+dlat/2)) - np.sin(np.pi/180 * (lat_vec[i]-dlat/2)))
 
     # NB: change: * years rather than / years
 
-#    lat_vec = ds['lat_vec']
     n_sst_q3_lat = np.sum(ds['n_sst_q3_lat'],axis=0)[0:3600,] / np.array((lat_fraction * surface_vec) * years)
     n_sst_q4_lat = np.sum(ds['n_sst_q4_lat'],axis=0)[0:3600,] / np.array((lat_fraction * surface_vec) * years)
     n_sst_q5_lat = np.sum(ds['n_sst_q5_lat'],axis=0)[0:3600,] / np.array((lat_fraction * surface_vec) * years)
+
+    gd_q3 = np.isfinite(np.array(n_sst_q3_lat))
+    gd_q4 = np.isfinite(np.array(n_sst_q4_lat))
+    gd_q5 = np.isfinite(np.array(n_sst_q5_lat))
+    n_sst_q3_lat_mean = np.array(n_sst_q3_lat)[gd_q3].mean()
+    n_sst_q4_lat_mean = np.array(n_sst_q4_lat)[gd_q4].mean()
+    n_sst_q5_lat_mean = np.array(n_sst_q5_lat)[gd_q5].mean()
+    print('n_sst_q3_lat_mean=', n_sst_q3_lat_mean)
+    print('n_sst_q4_lat_mean=', n_sst_q4_lat_mean)
+    print('n_sst_q5_lat_mean=', n_sst_q5_lat_mean)
 
     #
     # CONCATENATE HISTOGRAMS
@@ -684,6 +694,8 @@ i]+dlat/2)) - np.sin(np.pi/180 * (lat_vec[i]-dlat/2)))
     # CALL PLOTTING ROUTINES
     #
 
+    plot_n_sst_lat(lat_vec,n_sst_q3_lat,n_sst_q4_lat,n_sst_q5_lat)
+
     plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist)
     plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensitivity_q4_hist,sensitivity_q5_hist)
     plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertainty_q3_hist,total_uncertainty_q4_hist,total_uncertainty_q5_hist)
@@ -691,7 +703,6 @@ i]+dlat/2)) - np.sin(np.pi/180 * (lat_vec[i]-dlat/2)))
     plot_n_sst(times,n_sst_q3,n_sst_q4,n_sst_q5)
     plot_n_sst_timeseries(satellites)
     plot_n_sst_boxplots(satellites)
-    plot_n_sst_lat(lat_vec,n_sst_q3_lat,n_sst_q4_lat,n_sst_q5_lat)
 
     df_all, df_avhrr, df_atsr = calc_n_sst_timeseries(satellites)
     print(df_all.mean())
