@@ -7,8 +7,8 @@
 
 # COUNT SST obs density + uncertainty histograms for each q-level and zonal latitude
 # ----------------------------------------------------------------------------------
-# Version 0.11
-# 13 February, 2019
+# Version 0.12
+# 20 March, 2019
 # michael.taylor AT reading DOT ac DOT uk
 
 # CHANGELOG:
