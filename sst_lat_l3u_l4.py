@@ -15,6 +15,7 @@ import xarray
 import seaborn as sns; sns.set(style="darkgrid")
 import matplotlib
 import matplotlib.pyplot as plt; plt.close("all")
+from statsmodels import robust as rb
 
 def plot_sst_lat(lat,sst_q3_lat,sst_q5_lat,plotfile):
 
@@ -73,6 +74,8 @@ if __name__ == "__main__":
         year = 2010
         month = 10
         day = 10
+
+    FLAG_plot = 0
 
 #    path_in = '/Users/michaeltaylor/Desktop/REPOS/AVHRR_SST/'
 #    path_l4 = '/Users/michaeltaylor/Desktop/REPOS/AVHRR_SST/DATA/L4/'    
@@ -166,10 +169,11 @@ if __name__ == "__main__":
             sst_q3_lat_diff = np.array(sst_q3_lat) - np.array(sst_q3_lat_l4)
             sst_q5_lat_diff = np.array(sst_q5_lat) - np.array(sst_q5_lat_l4)
 
-            plotfile = instrument + '_' + file_out[:13]
+            if FLAG_plot:
 
-            plot_sst_lat(lat,sst_q3_lat,sst_q5_lat,plotfile)
-            plot_sst_lat_diff(lat,sst_q3_lat_diff,sst_q5_lat_diff,plotfile)
+                plotfile = instrument + '_' + file_out[:13]
+                plot_sst_lat(lat,sst_q3_lat,sst_q5_lat,plotfile)
+                plot_sst_lat_diff(lat,sst_q3_lat_diff,sst_q5_lat_diff,plotfile)
 
             sst_q3_lat_total += sst_q3_lat_sum
             sst_q5_lat_total += sst_q5_lat_sum 
@@ -189,11 +193,21 @@ if __name__ == "__main__":
         gd = np.isfinite(sst_q5_lat_mean)
         sst_q5_lat_mean_diff[gd] = sst_q5_lat_mean[gd] - sst_l4_lat_mean[gd]
 
-        plotfile = instrument + '_' + file_out[:8]
+        if FLAG_plot:
 
-        plot_sst_lat(lat,sst_q3_lat_mean,sst_q5_lat_mean,plotfile)
-        plot_sst_lat_diff(lat,sst_q3_lat_mean_diff,sst_q5_lat_mean_diff,plotfile)
+            plotfile = instrument + '_' + file_out[:8]
+            plot_sst_lat(lat,sst_q3_lat_mean,sst_q5_lat_mean,plotfile)
+            plot_sst_lat_diff(lat,sst_q3_lat_mean_diff,sst_q5_lat_mean_diff,plotfile)
 
+        print('sst_q3_lat_mean_diff.mean=',np.mean(np.isfinite(sst_q3_lat_mean_diff)))
+        print('sst_q3_lat_mean_diff.median=',np.median(np.isfinite(sst_q3_lat_mean_diff)))
+        print('sst_q3_lat_mean_diff.sd=',np.std(np.isfinite(sst_q3_lat_mean_diff)))
+        print('sst_q3_lat_mean_diff.rsd=',rb.mad(np.isfinite(sst_q3_lat_mean_diff)))
+
+        print('sst_q5_lat_mean_diff.mean=',np.mean(np.isfinite(sst_q5_lat_mean_diff)))
+        print('sst_q5_lat_mean_diff.median=',np.median(np.isfinite(sst_q5_lat_mean_diff)))
+        print('sst_q5_lat_mean_diff.sd=',np.std(np.isfinite(sst_q5_lat_mean_diff)))
+        print('sst_q5_lat_mean_diff.rsd=',rb.mad(np.isfinite(sst_q5_lat_mean_diff)))
 
     print('** END')
 
