@@ -20,14 +20,14 @@
 # with this program; if not, see http://www.gnu.org/licenses/                             
 
 echo '. /gws/nopw/j04/fiduceo/Users/mtaylor/anaconda3/bin/activate mike' > run.sst_lat_l3u_l4.sh
-#echo python sst_lat_l3u_l4.py AVHRRMTA_G 2010 10 10 >> run.sst_lat_l3u_l4.sh
+echo python sst_lat_l3u_l4.py AVHRRMTA_G 2010 10 10 >> run.sst_lat_l3u_l4.sh
 #echo python sst_lat_l3u_l4.py AVHRR19_G 2010 10 10 >> run.sst_lat_l3u_l4.sh
 #echo python sst_lat_l3u_l4.py AVHRR18_G 2010 10 10 >> run.sst_lat_l3u_l4.sh
 #echo python sst_lat_l3u_l4.py AVHRR17_G 2004 04 04 >> run.sst_lat_l3u_l4.s
 #echo python sst_lat_l3u_l4.py AVHRR16_G 2004 04 04 >> run.sst_lat_l3u_l4.sh
 #echo python sst_lat_l3u_l4.py AVHRR15_G 2004 04 04 >> run.sst_lat_l3u_l4.sh
 #echo python sst_lat_l3u_l4.py AVHRR14_G 1998 08 08 >> run.sst_lat_l3u_l4.sh
-echo python sst_lat_l3u_l4.py AVHRR12_G 1998 08 08 >> run.sst_lat_l3u_l4.sh
+#echo python sst_lat_l3u_l4.py AVHRR12_G 1998 08 08 >> run.sst_lat_l3u_l4.sh
 #echo python sst_lat_l3u_l4.py AVHRR11_G 1994 04 04 >> run.sst_lat_l3u_l4.sh
 
 bsub -q short-serial -W10:00 -R rusage[mem=5000] -M 5000 -oo run.1.log < run.sst_lat_l3u_l4.sh
