@@ -60,8 +60,8 @@ def plot_sst_lat_diff(lat,sst_q3_lat_diff,sst_q5_lat_diff,plotfile):
     file_str = plotfile + "_diff" + ".png"
 
     fig, ax = plt.subplots()
-    plt.plot(sst_q3_lat_diff, lat, '.', color='g', alpha=0.2, label='ql=3')
-    plt.plot(sst_q5_lat_diff, lat, '.', color='r', alpha=0.2, label='ql=4&5')
+    plt.plot(sst_q3_lat_diff, lat, '.', color='g', alpha=0.2, label=q3str)
+    plt.plot(sst_q5_lat_diff, lat, '.', color='r', alpha=0.2, label=q5str)
     ax = plt.gca()
     ax.set_ylim([-91,90])
     ticks = ax.get_yticks()
