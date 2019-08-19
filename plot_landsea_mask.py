@@ -27,6 +27,8 @@ plt.xlim([-180,180])
 plt.ylim([-90,90])
 plt.setp(ax2.get_yticklabels(), visible=False)
 plt.xlabel(r'Longitude / $\mathrm{\degree E}$', fontsize=12)
-plt.savefig('mask_map.png')
+#plt.savefig('mask_map.png')
+plt.savefig('mask_map.eps', format='eps', dpi=1200)
+plt.close('all')
 
 
