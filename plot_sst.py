@@ -2,8 +2,8 @@
 
 # PROGRAM: plot_sst.py
 # ----------------------------------------------------------------------------------
-# Version 0.17
-# 6 June, 2019
+# Version 0.18
+# 19 August, 2019
 # michael.taylor AT reading DOT ac DOT uk
 
 # PYTHON DEBUGGER CONTROL:
@@ -24,7 +24,7 @@ import seaborn as sns; sns.set(style="darkgrid")
 import datetime
 import matplotlib
 import matplotlib.pyplot as plt; plt.close("all")
-
+#import typhon
 #from typhon.plots import plot_bitfield
 #cmap = 'tab20c' # https://matplotlib.org/users/colormaps
     
@@ -81,8 +81,9 @@ def plot_n_sst(times,n_sst_q3,n_sst_q4,n_sst_q5):
     title_str = ' ' + 'QL=3:max=' + "{0:.5f}".format(df['QL=3'].cumsum().max()) + ' ' + 'QL=4 & 5:max=' + "{0:.5f}".format(df['QL=4 & 5'].cumsum().max())
     print(title_str)
     plt.legend(loc='best')
-    plt.savefig('n_sst.png', dpi=600)    
-#    plt.savefig(file.png, edgecolor='black', dpi=400, facecolor='white', transparent=True)
+#    plt.savefig('n_sst.png', dpi=600)    
+    plt.savefig('n_sst.eps', format='eps', dpi=1200)
+    plt.close('all')
 
 def plot_n_sst_lat(lat_vec,n_sst_q3_lat,n_sst_q4_lat,n_sst_q5_lat):
     """
@@ -114,7 +115,9 @@ def plot_n_sst_lat(lat_vec,n_sst_q3_lat,n_sst_q4_lat,n_sst_q5_lat):
     plt.xlabel("Latitude / $\mathrm{\degree N}$", fontsize=12)
     plt.ylabel("Observation density / $\mathrm{km^{-2} \ yr^{-1}}$", fontsize=12)
     plt.legend(loc='best')
-    plt.savefig('n_sst_lat.png', dpi=600)
+#    plt.savefig('n_sst_lat.png', dpi=600)
+    plt.savefig('n_sst_lat.eps', format='eps', dpi=1200)
+    plt.close('all')
 
 def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
     """
@@ -159,7 +162,9 @@ def plot_histogram_sst(sst_midpoints,sst_q3_hist,sst_q4_hist,sst_q5_hist):
     title_str = 'SST: QL=3:median=' + "{0:.5f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.5f}".format(M4_5)
     print(title_str)
     plt.legend(loc='best')
-    plt.savefig('hist_sst.png', dpi=600)
+#    plt.savefig('hist_sst.png', dpi=600)
+    plt.savefig('hist_sst.eps', format='eps', dpi=1200)
+    plt.close('all')
     
 def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensitivity_q4_hist,sensitivity_q5_hist):
     """
@@ -194,7 +199,9 @@ def plot_histogram_sensitivity(sensitivity_midpoints,sensitivity_q3_hist,sensiti
     title_str = 'Sensitivity: QL=3:median=' + "{0:.5f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.5f}".format(M4_5)
     print(title_str)
     plt.legend(loc='best')
-    plt.savefig('hist_sensitivity.png', dpi=600)
+#    plt.savefig('hist_sensitivity.png', dpi=600)
+    plt.savefig('hist_sensitivity.eps', format='eps', dpi=1200)
+    plt.close('all')
 
 def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertainty_q3_hist,total_uncertainty_q4_hist,total_uncertainty_q5_hist):
     """
@@ -229,7 +236,9 @@ def plot_histogram_total_uncertainty(total_uncertainty_midpoints,total_uncertain
     title_str = 'Uncertainty: QL=3:median=' + "{0:.5f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.5f}".format(M4_5)
     print(title_str)
     plt.legend(loc='best')
-    plt.savefig('hist_total_uncertainty.png', dpi=600)
+#    plt.savefig('hist_total_uncertainty.png', dpi=600)
+    plt.savefig('hist_total_uncertainty.eps', format='eps', dpi=1200)
+    plt.close('all')
 
 def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertainty_q3_hist_avhrr,total_uncertainty_q4_hist_avhrr,total_uncertainty_q5_hist_avhrr,total_uncertainty_q3_hist_atsr,total_uncertainty_q4_hist_atsr,total_uncertainty_q5_hist_atsr):
     """
@@ -272,7 +281,9 @@ def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertai
     title_str = 'AVHRR: QL=3:median=' + "{0:.5f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.5f}".format(M4_5)
     print(title_str)
     plt.legend(loc='best')
-    plt.savefig('hist_total_uncertainty_avhrr.png', dpi=600)
+#    plt.savefig('hist_total_uncertainty_avhrr.png', dpi=600)
+    plt.savefig('hist_total_uncertainty_avhrr.eps', format='eps', dpi=1200)
+    plt.close('all')
 
     fig = plt.figure()    
     plt.fill_between(total_uncertainty_midpoints,df_atsr['QL=4 & 5'], step="post", alpha=0.4)
@@ -289,7 +300,9 @@ def plot_histogram_total_uncertainty2(total_uncertainty_midpoints,total_uncertai
     title_str = 'ATSR: QL=3:median=' + "{0:.5f}".format(M3) + ' ' + 'QL=4 & 5:median=' + "{0:.5f}".format(M4_5)
     print(title_str)
     plt.legend(loc='best')
-    plt.savefig('hist_total_uncertainty_atsr.png', dpi=600)
+#    plt.savefig('hist_total_uncertainty_atsr.png', dpi=600)
+    plt.savefig('hist_total_uncertainty_atsr.eps', format='eps', dpi=1200)
+    plt.close('all')
 
 def calc_n_sst_timeseries(satellites):
     """
@@ -443,7 +456,9 @@ def plot_n_sst_timeseries(satellites):
     fig.legend(lab, fontsize=8, loc=7, markerscale=20, scatterpoints=5)
     fig.subplots_adjust(right=0.8)  
     fig.text(0.01, 0.5, 'Observation density / $\mathrm{km^{-2} \ yr^{-1}}$', va='center', rotation='vertical')
-    plt.savefig('n_sst_timeseries.png', dpi=600)
+#    plt.savefig('n_sst_timeseries.png', dpi=600)
+    plt.savefig('n_sst_timeseries.eps', format='eps', dpi=1200)
+    plt.close('all')
 
 def plot_n_sst_boxplots(satellites):
     """
@@ -478,8 +493,10 @@ def plot_n_sst_boxplots(satellites):
         title_str = 'QL=4 & 5:' + labels[i]
         ax.set_ylabel('Observation density / $\mathrm{km^{-2} \ yr^{-1}}$')
         ax.set_title(title_str, fontsize=10)
-        file_str = 'n_sst_boxplot_' + labels[i] + '_QL4_5' '.png'
-        plt.savefig(file_str, dpi=600)
+#        file_str = 'n_sst_boxplot_' + labels[i] + '_QL4_5' + '.png'
+#        plt.savefig(file_str, dpi=600)
+        file_str = 'n_sst_boxplot_' + labels[i] + '_QL4_5' + '.eps'
+        plt.savefig(file_str, format='eps', dpi=1200)
         plt.close("all")        
 
     for i in range(0,len(satellites)):
@@ -502,8 +519,10 @@ def plot_n_sst_boxplots(satellites):
         title_str = 'QL=3:' + labels[i]
         ax.set_ylabel('Observation density / $\mathrm{km^{-2} \ yr^{-1}}$')
         ax.set_title(title_str, fontsize=10)
-        file_str = 'n_sst_boxplot_' + labels[i] + '_QL3' '.png'
-        plt.savefig(file_str, dpi=600)
+#        file_str = 'n_sst_boxplot_' + labels[i] + '_QL3' '.png'
+#        plt.savefig(file_str, dpi=600)
+        file_str = 'n_sst_boxplot_' + labels[i] + '_QL3' '.eps'
+        plt.savefig(file_str, format='eps', dpi=1200)
         plt.close("all")        
 
 def calc_lat_fraction():
@@ -574,8 +593,9 @@ i]+dlat/2)) - np.sin(np.pi/180 * (lat_vec[i]-dlat/2)))
     file_str = "ocean_area.png"
     plt.title(title_str)
     fig.tight_layout()
-    plt.savefig(file_str)
-
+#    plt.savefig('ocean_area.png', dpi=600)
+    plt.savefig('ocean_area.eps', format='eps', dpi=1200)
+    plt.close('all')
 
     satellites = ['AVHRR07_G','AVHRR09_G','AVHRR11_G','AVHRR12_G','AVHRR14_G','AVHRR15_G','AVHRR16_G','AVHRR17_G','AVHRR18_G','AVHRR19_G','AVHRRMTA_G','AATSR','ATSR1','ATSR2']
     df = []
